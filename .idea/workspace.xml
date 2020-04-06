@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="initial commit; coded persistence diagrams part">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/PerManifold.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PerManifold.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1a5gVlGJMBjL5b7Oin1VKiMcAMM" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+  </component>
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="" />
+      <created>1586035024544</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586035024544</updated>
+      <workItem from="1586035025634" duration="3286000" />
+      <workItem from="1586043059184" duration="7500000" />
+      <workItem from="1586053178481" duration="11075000" />
+      <workItem from="1586080348943" duration="14926000" />
+      <workItem from="1586154890629" duration="8824000" />
+      <workItem from="1586167562800" duration="8261000" />
+      <workItem from="1586206122566" duration="246000" />
+    </task>
+    <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
+      <created>1586205748520</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1586205748520</updated>
+    </task>
+    <task id="LOCAL-00002" summary="initial commit; coded persistence diagrams part">
+      <created>1586206249611</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1586206249611</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial commit; coded persistence diagrams part" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial commit; coded persistence diagrams part" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1348" y="600" width="1200" height="1009" key="#Servers" timestamp="1586174614737">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1348" y="600" width="1200" height="1009" key="#Servers/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586174614737" />
+    <state x="1442" y="869" width="1013" height="470" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1586126688335">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1442" y="869" width="1013" height="470" key="#com.intellij.fileTypes.FileTypeChooser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586126688335" />
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586206382750">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206382750" />
+    <state x="1603" y="723" width="691" height="762" key="FileChooserDialogImpl" timestamp="1586205602772">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1603" y="723" width="691" height="762" key="FileChooserDialogImpl/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586205602772" />
+    <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor" timestamp="1586044819714">
+      <screen x="3840" y="0" width="3840" height="2160" />
+    </state>
+    <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586044819714" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586206263983">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206263983" />
+    <state x="1476" y="856" key="com.intellij.ide.util.TipDialog" timestamp="1586206123267">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="5274" y="829" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586043060785" />
+    <state x="1476" y="856" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206123267" />
+    <state x="1452" y="801" width="993" height="606" key="git4idea.merge.GitPullDialog" timestamp="1586206320861">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1452" y="801" width="993" height="606" key="git4idea.merge.GitPullDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206320861" />
+    <state x="1440" y="523" width="1023" height="1470" key="search.everywhere.popup" timestamp="1586130970283">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1440" y="523" width="1023" height="1470" key="search.everywhere.popup/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586130970283" />
+  </component>
+</project>
