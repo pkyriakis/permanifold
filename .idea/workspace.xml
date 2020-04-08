@@ -2,10 +2,411 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="initial commit; coded persistence diagrams part">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/PerManifold.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PerManifold.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_1.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_10.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_100.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_11.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_12.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_13.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_14.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_15.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_16.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_17.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_18.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_19.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_2.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_20.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_21.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_22.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_23.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_24.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_25.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_26.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_27.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_28.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_29.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_3.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_30.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_31.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_32.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_33.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_34.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_35.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_36.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_37.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_38.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_39.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_4.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_40.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_41.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_42.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_43.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_44.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_45.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_46.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_47.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_48.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_49.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_5.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_50.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_51.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_52.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_53.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_54.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_55.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_56.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_57.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_58.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_59.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_6.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_60.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_61.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_62.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_63.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_64.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_65.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_66.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_67.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_68.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_69.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_7.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_70.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_71.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_72.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_73.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_74.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_75.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_76.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_77.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_78.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_79.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_8.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_80.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_81.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_82.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_83.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_84.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_85.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_86.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_87.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_88.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_89.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_9.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_90.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_91.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_92.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_93.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_94.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_95.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_96.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_97.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_98.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_test/ckpnt_99.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_1.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_10.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_100.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_101.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_102.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_103.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_104.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_105.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_106.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_107.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_108.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_109.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_11.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_110.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_111.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_112.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_113.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_114.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_115.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_116.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_117.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_118.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_119.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_12.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_120.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_121.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_122.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_123.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_124.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_125.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_126.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_127.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_128.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_129.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_13.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_130.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_131.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_132.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_133.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_134.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_135.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_136.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_137.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_138.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_139.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_14.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_140.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_141.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_142.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_143.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_144.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_145.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_146.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_147.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_148.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_149.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_15.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_150.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_151.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_152.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_153.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_154.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_155.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_156.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_157.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_158.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_159.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_16.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_160.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_161.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_162.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_163.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_164.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_165.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_166.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_167.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_168.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_169.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_17.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_170.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_171.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_172.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_173.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_174.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_175.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_176.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_177.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_178.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_179.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_18.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_180.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_181.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_182.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_183.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_184.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_185.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_186.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_187.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_188.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_189.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_19.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_190.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_191.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_192.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_193.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_194.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_195.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_196.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_197.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_198.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_199.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_2.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_20.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_200.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_201.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_202.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_203.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_204.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_205.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_206.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_207.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_208.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_209.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_21.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_210.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_211.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_212.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_213.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_214.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_215.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_216.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_217.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_218.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_219.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_22.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_220.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_221.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_222.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_223.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_224.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_225.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_226.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_227.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_228.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_229.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_23.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_230.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_231.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_232.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_233.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_234.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_235.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_236.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_237.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_238.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_239.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_24.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_240.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_241.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_242.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_243.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_244.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_245.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_246.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_247.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_248.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_249.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_25.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_250.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_251.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_252.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_253.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_254.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_255.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_256.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_257.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_258.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_259.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_26.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_260.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_261.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_262.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_263.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_264.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_265.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_266.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_267.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_268.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_269.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_27.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_270.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_271.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_272.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_273.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_274.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_275.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_276.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_277.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_278.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_279.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_28.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_280.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_281.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_282.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_283.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_284.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_285.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_286.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_287.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_288.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_289.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_29.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_290.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_291.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_292.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_293.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_294.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_295.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_296.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_297.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_298.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_299.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_3.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_30.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_300.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_31.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_32.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_33.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_34.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_35.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_36.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_37.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_38.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_39.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_4.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_40.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_41.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_42.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_43.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_44.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_45.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_46.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_47.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_48.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_49.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_5.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_50.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_51.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_52.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_53.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_54.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_55.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_56.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_57.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_58.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_59.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_6.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_60.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_61.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_62.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_63.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_64.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_65.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_66.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_67.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_68.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_69.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_7.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_70.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_71.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_72.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_73.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_74.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_75.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_76.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_77.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_78.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_79.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_8.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_80.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_81.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_82.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_83.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_84.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_85.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_86.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_87.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_88.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_89.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_9.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_90.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_91.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_92.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_93.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_94.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_95.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_96.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_97.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_98.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dgms/mnist_train/ckpnt_99.npz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/persistence_diagram.py" beforeDir="false" afterPath="$PROJECT_DIR$/persistence_diagram.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +429,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
   </component>
   <component name="IgnoredFileRootStore">
     <option name="generatedRoots">
@@ -44,12 +446,25 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="StructureViewFactory">
     <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED" />
@@ -70,7 +485,7 @@
       <workItem from="1586080348943" duration="14926000" />
       <workItem from="1586154890629" duration="8824000" />
       <workItem from="1586167562800" duration="8261000" />
-      <workItem from="1586206122566" duration="246000" />
+      <workItem from="1586206122566" duration="68921000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -86,7 +501,21 @@
       <option name="project" value="LOCAL" />
       <updated>1586206249611</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="initial commit; coded persistence diagrams part">
+      <created>1586206383329</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1586206383329</updated>
+    </task>
+    <task id="LOCAL-00004" summary="initial commit; coded persistence diagrams part">
+      <created>1586206406027</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1586206406027</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -110,6 +539,14 @@
     <option name="LAST_COMMIT_MESSAGE" value="initial commit; coded persistence diagrams part" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="2226" y="509" width="1200" height="1009" key="#Docker" timestamp="1586253661892">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="2226" y="509" width="1200" height="1009" key="#Docker/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586253661892" />
+    <state x="1473" y="453" width="950" height="1300" key="#Dockerfile" timestamp="1586253663028">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1473" y="453" width="950" height="1300" key="#Dockerfile/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586253663028" />
     <state x="1348" y="600" width="1200" height="1009" key="#Servers" timestamp="1586174614737">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -118,27 +555,32 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1442" y="869" width="1013" height="470" key="#com.intellij.fileTypes.FileTypeChooser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586126688335" />
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586206382750">
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586333576012">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206382750" />
-    <state x="1603" y="723" width="691" height="762" key="FileChooserDialogImpl" timestamp="1586205602772">
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586333576012" />
+    <state x="2000" y="1012" width="691" height="746" key="FileChooserDialogImpl" timestamp="1586249493044">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1603" y="723" width="691" height="762" key="FileChooserDialogImpl/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586205602772" />
-    <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor" timestamp="1586044819714">
-      <screen x="3840" y="0" width="3840" height="2160" />
+    <state x="2000" y="1012" width="691" height="746" key="FileChooserDialogImpl/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586249493044" />
+    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor" timestamp="1586289923252">
+      <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586044819714" />
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586206263983">
+    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586289923252" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586206413785">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206263983" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206413785" />
     <state x="1476" y="856" key="com.intellij.ide.util.TipDialog" timestamp="1586206123267">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="5274" y="829" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586043060785" />
     <state x="1476" y="856" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206123267" />
+    <state x="1598" y="984" width="700" height="241" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586221904360">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1598" y="984" width="700" height="241" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586221904360" />
     <state x="1452" y="801" width="993" height="606" key="git4idea.merge.GitPullDialog" timestamp="1586206320861">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
