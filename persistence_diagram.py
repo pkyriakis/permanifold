@@ -17,6 +17,7 @@ class PDiagram():
         self.images = images
         self.dgms_dir = 'data/dgms/' + images_id + "/"
         self.vdgms_dir = 'data/vdgms/' + images_id + "/"
+        self.edgms_dir = 'data/edgms/' + images_id + "/"
 
         self.f_values = np.linspace(0, 1, num_of_fil)
         self.man_dim = man_dim
@@ -28,6 +29,7 @@ class PDiagram():
         self.manager = multiprocessing.Manager()
         self.dgms_dict = self.manager.dict()
         self.vdgms_dict = self.manager.dict()
+        self.edgms_dict = self.manager.dict()
 
         if not os.path.exists(self.dgms_dir):
             os.makedirs(self.dgms_dir)
@@ -41,6 +43,11 @@ class PDiagram():
             os.makedirs(self.vdgms_dir)
         else:
             self.vdgms_dict = self.__load_pds(self.vdgms_dir)
+
+        if not os.path.exists(self.edgms_dir):
+            os.makedirs(self.edgms_dir)
+        else:
+            self.edgms_dict = self.__load_pds(self.edgms_dir)
 
     def __update_progress(self):
         '''
@@ -61,7 +68,7 @@ class PDiagram():
         dct = dict()
         for filename in os.listdir(dir):
             with open(os.path.join(dir,filename), 'rb') as f:
-                input = np.load(f)
+                input = np.load(f, allow_pickle=True)
                 for key in input.keys():
                     dct[int(key)] = input[key]
         return dct
@@ -285,6 +292,42 @@ class PDiagram():
         self.__save_pds(self.vdgms_dict, self.vdgms_dir, chunk)
 
 
+    def __embed_pds_chunk(self, chunk):
+        '''
+            Embeds points in PDs in an Euclidean space (for the given chunk of indices)
+        '''
+
+        self.get_pds()
+        lin_space = np.linspace(0,1,int(np.sqrt(self.man_dim)))
+        grid_x,grid_y = np.meshgrid(lin_space,lin_space)
+        cov = np.eye(2)
+        rho = lambda x, y, mu: multivariate_normal(mean=mu, cov=cov).pdf([x, y])
+
+        for index in chunk:
+            dgm = self.dgms_dict[index]
+
+            dgm_of_hom = defaultdict(list)
+            embeded_points = np.zeros(
+                (len(dgm), self.man_dim + 1))  # the 0-th element of each point is its homology class
+            cnt = 0
+            for point in dgm:
+                hom = point[0]
+                birth, peristence = self.__rotate_point(point[1:])
+                embeded_point = []
+                for dim in range(self.man_dim):
+                    i = dim // np.sqrt(self.man_dim)
+                    j = dim % np.sqrt(self.man_dim)
+                    i = int(i)
+                    j = int(j)
+                    mu = [grid_x[i, j], grid_y[i, j]]
+                    embeded_point.append(rho(point[0], point[1], mu))
+                embeded_points[cnt, 0] = hom
+                embeded_points[cnt, 1:] = embeded_point
+                cnt += 1
+            self.done.value += 1
+            self.edgms_dict[index] = embeded_points
+        self.__save_pds(self.edgms_dict, self.edgms_dir, chunk)
+
     def __run_parallel(self, target, indices):
         '''
             Parellel run of target; the given list of indices creates the chunks to allocate to each cpu
@@ -299,7 +342,7 @@ class PDiagram():
             p.start()
             jobs.append(p)
 
-        # Start a job to udate progress bar
+        # Start a job to update progress bar
         p = multiprocessing.Process(target=self.__update_progress)
         jobs.append(p)
         p.start()
@@ -339,42 +382,20 @@ class PDiagram():
             self.__run_parallel(self.__vectorize_pds_chunk, inds_left)
         return self.vdgms_dict
 
-    def get_embedded_pds(self, man_dim = 9):
+    def get_embedded_pds(self):
         '''
-            Embeds points in PDs in an Euclidean space of dim=man_dim
+            Get embedded PDs
         '''
-
         self.get_pds()
-        lin_space = np.linspace(0,1,int(np.sqrt(man_dim)))
-        grid_x,grid_y = np.meshgrid(lin_space,lin_space)
-        cov = np.eye(2)
-        rho = lambda x, y, mu: multivariate_normal(mean=mu, cov=cov).pdf([x, y])
 
-        self.embedded_points = dict()
-        for index, dgm in self.dgms_dict.items():
-            print(index)
-            # Get PD for each homology class
-            dgm_of_hom = defaultdict(list)
-            for point in dgm:
-                hom = point[0]
-                birth, peristence = self.__rotate_point(point[1:])
-                dgm_of_hom[hom].append([birth, peristence])
+        computed_inds = list(self.edgms_dict.keys())
+        inds_left = list(filter(lambda i: i not in computed_inds, self.img_inds))
+        self.done.value = len(computed_inds)
+        if len(inds_left) > 0:
+            print('Embedding persistence diagrams...')
+            self.__run_parallel(self.__embed_pds_chunk, inds_left)
+        return self.edgms_dict
 
-            embeded_points_of_hom = dict()
-            for hom in dgm_of_hom.keys():
-                embeded_points = []
-                for point in dgm_of_hom[hom]:
-                    embeded_point = []
-                    for dim in range(man_dim):
-                        i = dim // np.sqrt(man_dim)
-                        j = dim % np.sqrt(man_dim)
-                        i = int(i)
-                        j = int(j)
-                        mu = [grid_x[i,j],grid_y[i,j]]
-                        embeded_point.append(rho(point[0],point[1],mu))
-                    embeded_points.append(embeded_point)
-                embeded_points_of_hom[hom] = np.array(embeded_points)
-            self.embedded_points[index] = embeded_points_of_hom
 
 
 
