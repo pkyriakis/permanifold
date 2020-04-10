@@ -115,7 +115,7 @@ class Poincare:
 
 def get_mnist_data(binirize = False):
     '''
-        Uses the keras backend to downlaoad and binirize the MNIST images
+        Uses the keras backend to downlaad and binirize the MNIST images
     :return: train_images, train_labels, test_images, test_labels
     '''
     (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()
