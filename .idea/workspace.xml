@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="created train.py">
-      <change afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+    <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hyperbolic_nn" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/layers.py" beforeDir="false" afterPath="$PROJECT_DIR$/layers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/persistence_diagram.py" beforeDir="false" afterPath="$PROJECT_DIR$/persistence_diagram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +51,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/main.py" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RunManager" selected="Docker.Dockerfile">
     <configuration name="Unnamed" type="PyRemoteDebugConfigurationType" factoryName="Python Remote Debug" nameIsGenerated="true">
@@ -163,6 +161,7 @@
       <workItem from="1586385057753" duration="3425000" />
       <workItem from="1586388507321" duration="172000" />
       <workItem from="1586418471938" duration="8658000" />
+      <workItem from="1586513940832" duration="2794000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -206,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586495392048</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="created train.py">
+      <created>1586508439481</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1586508439481</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -225,6 +231,9 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/hyperbolic_nn" />
+    </ignored-roots>
     <MESSAGE value="initial commit; coded persistence diagrams part" />
     <MESSAGE value="codded persistence images vectorization by mistake; save it in case needed later" />
     <MESSAGE value="created train.py" />
@@ -255,10 +264,10 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1442" y="869" width="1013" height="470" key="#com.intellij.fileTypes.FileTypeChooser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586126688335" />
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586508423046">
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586508439415">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586508423046" />
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586508439415" />
     <state x="167" y="142" width="3573" height="1918" key="DiffContextDialog" timestamp="1586333675531">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -299,15 +308,15 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state width="3703" height="733" key="GridCell.Tab.1.right/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586418343798" />
-    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor" timestamp="1586289923252">
+    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor" timestamp="1586513977333">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586044819714" />
-    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586289923252" />
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586495404884">
+    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586513977333" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586508444905">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586495404883" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586508444905" />
     <state x="1476" y="856" key="com.intellij.ide.util.TipDialog" timestamp="1586344194667">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
