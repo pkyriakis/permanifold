@@ -302,30 +302,29 @@ class PDiagram():
         grid_x,grid_y = np.meshgrid(lin_space,lin_space)
         cov = np.eye(2)
         rho = lambda x, y, mu: multivariate_normal(mean=mu, cov=cov).pdf([x, y])
-
         for index in chunk:
             dgm = self.dgms_dict[index]
-
-            dgm_of_hom = defaultdict(list)
-            embeded_points = np.zeros(
-                (len(dgm), self.man_dim + 1))  # the 0-th element of each point is its homology class
-            cnt = 0
+            embeded_points = []  # the 0-th element of each point is its homology class
+            # Keep track of unique points to speed up
+            unique_points = defaultdict(int)
             for point in dgm:
-                hom = point[0]
-                birth, peristence = self.__rotate_point(point[1:])
-                embeded_point = []
-                for dim in range(self.man_dim):
-                    i = dim // np.sqrt(self.man_dim)
-                    j = dim % np.sqrt(self.man_dim)
-                    i = int(i)
-                    j = int(j)
-                    mu = [grid_x[i, j], grid_y[i, j]]
-                    embeded_point.append(rho(point[0], point[1], mu))
-                embeded_points[cnt, 0] = hom
-                embeded_points[cnt, 1:] = embeded_point
-                cnt += 1
+                if not tuple(point) in unique_points:
+                    unique_points[tuple(point)] = 0 # need to figure out how to handle multiplicities
+                    hom = point[0]
+                    birth, peristence = self.__rotate_point(point[1:])
+                    embeded_point = []
+                    for dim in range(self.man_dim):
+                        i = dim // np.sqrt(self.man_dim)
+                        j = dim % np.sqrt(self.man_dim)
+                        i = int(i)
+                        j = int(j)
+                        mu = [grid_x[i, j], grid_y[i, j]]
+                        embeded_point.append(rho(birth, peristence, mu))
+                    embeded_points.append([hom] + embeded_point)
+                else:
+                    unique_points[tuple(point)] += 1
             self.done.value += 1
-            self.edgms_dict[index] = embeded_points
+            self.edgms_dict[index] = np.array(embeded_points)
         self.__save_pds(self.edgms_dict, self.edgms_dir, chunk)
 
     def __run_parallel(self, target, indices):
