@@ -18,6 +18,6 @@ def timer(func):
 
 def memoize(func):
     '''
-        Memorize a function
+        Memorize a function, TODO
     '''
     pass

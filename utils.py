@@ -29,10 +29,6 @@ class Poincare:
         return 2. / (1 - c * Poincare.tf_dot(x,x))
 
     @staticmethod
-    def lambda_x(x, c):
-        return 2. / (1 - c * LA.norm(x)**2)
-
-    @staticmethod
     def tf_atanh(x):
         return tf.atanh(tf.minimum(x, 1. - Poincare.EPS)) # Only works for positive real x.
 
@@ -56,22 +52,6 @@ class Poincare:
         result = (1. + tf_dot_u_v + tf_norm_v_sq) / denominator * u + (1. - tf_norm_u_sq) / denominator * v
         return Poincare.tf_project_hyp_vecs(result, c)
 
-    @staticmethod
-    def mob_add(u, v, c):
-        numerator = (1.0 + 2.0 * c * np.dot(u,v) + c * LA.norm(v)**2) * u + (1.0 - c * LA.norm(u)**2) * v
-        denominator = 1.0 + 2.0 * c * np.dot(u,v) + c**2 * LA.norm(v)**2 * LA.norm(u)**2
-        return numerator / denominator
-
-    @staticmethod
-    def exp_map_x(x, v, c):
-        second_term = np.tanh(np.sqrt(c) * Poincare.lambda_x(x, c) * LA.norm(v) / 2) / (np.sqrt(c) * LA.norm(v)) * v
-        return Poincare.mob_add(x, second_term, c)
-
-    @staticmethod
-    def log_map_x(x, y, c):
-        diff = Poincare.mob_add(-x, y, c)
-        lam = Poincare.lambda_x(x, c)
-        return 2. / (np.sqrt(c) * lam) * np.arctanh(np.sqrt(c) * LA.norm(diff)) / (LA.norm(diff)) * diff
 
     @staticmethod
     def tf_exp_map_x(x, v, c):
@@ -87,16 +67,17 @@ class Poincare:
         lam = Poincare.tf_lambda_x(x, c)
         return (((2. / np.sqrt(c)) / lam) * Poincare.tf_atanh(np.sqrt(c) * norm_diff) / norm_diff) * diff
 
+
     @staticmethod
     def tf_parametrization(y, theta):
         '''
-            Projects the Euclidean point y onto the manifold given params theta
+            Transforms the Euclidean point y onto the manifold given params theta
         '''
         m = y.shape[0] # manifold dim
-        x = tf.Variable(tf.zeros(shape=(m,)))
+        x = []
         for i in range(m):
             if i == 0:
-                x_i = tf.multiply(theta[1], tf.norm(y))
+                x_i = tf.multiply(theta[0], tf.norm(y))
             elif i == m - 1:
                 den = tf.norm(y[i - 1:])
                 x_i = theta[m-1] + tf.acos(y[i - 1] / den)
@@ -104,12 +85,33 @@ class Poincare:
                     x_i = 2*math.pi - x_i
             else:
                 den = tf.norm(y[i - 1:])
-                x_i = tf.acos(y[i-1]/den)
-            x[i].assign(x_i)
-        return x
+                x_i = tf.acos(y[i-1]/den) + theta[i]
+            x.append(x_i)
+        return tf.convert_to_tensor(x)
 
-y = tf.Variable([1.,2.])
-theta = tf.Variable([3.,2.],trainable=True)
+
+    @staticmethod
+    def tf_chart(x, theta=None):
+        '''
+            Transforms the manifold point x to the Euclidean space
+        '''
+        m = x.shape[0]
+        if theta == None:
+            theta = [1] + [0]*(m-1)
+            theta = tf.convert_to_tensor(theta, dtype=tf.float32)
+        y = []
+        for i in range(m):
+            y_i = tf.multiply(x[0],theta[0])
+            for j in range(1, i-2):
+                y_i = tf.multiply(y_i, tf.sin(x[j] + theta[j]))
+            if i == m-1:
+                y_i = tf.multiply(y_i, tf.sin(x[i]) + theta[i])
+            else:
+                y_i = tf.multiply(y_i, tf.cos(x[i]) + theta[i])
+            y.append(y_i)
+        return tf.convert_to_tensor(y)
+
+
 
 def get_mnist_data(binirize = False):
     '''
