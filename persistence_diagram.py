@@ -297,7 +297,6 @@ class PDiagram():
             Embeds points in PDs in an Euclidean space (for the given chunk of indices)
         '''
 
-        self.get_pds()
         lin_space = np.linspace(0,1,int(np.sqrt(self.man_dim)))
         grid_x,grid_y = np.meshgrid(lin_space,lin_space)
         cov = np.eye(2)
@@ -309,7 +308,7 @@ class PDiagram():
             unique_points = defaultdict(int)
             for point in dgm:
                 if not tuple(point) in unique_points:
-                    unique_points[tuple(point)] = 0 # need to figure out how to handle multiplicities
+                    unique_points[tuple(point)] = 0 # TODO need to figure out how to handle multiplicities
                     hom = point[0]
                     birth, peristence = self.__rotate_point(point[1:])
                     embeded_point = []
@@ -331,7 +330,7 @@ class PDiagram():
         '''
             Parellel run of target; the given list of indices creates the chunks to allocate to each cpu
         '''
-        cpus = multiprocessing.cpu_count() - 1 # leave one cpu free
+        cpus = 2*multiprocessing.cpu_count() # leave one cpu free
         chuck_size = math.ceil(len(indices)/cpus)
 
         jobs = []
