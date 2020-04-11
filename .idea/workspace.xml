@@ -180,7 +180,8 @@
       <workItem from="1586418471938" duration="8658000" />
       <workItem from="1586513940832" duration="16741000" />
       <workItem from="1586567040866" duration="3358000" />
-      <workItem from="1586570941346" duration="1670000" />
+      <workItem from="1586570941346" duration="15720000" />
+      <workItem from="1586601015715" duration="6919000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -238,7 +239,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586521623398</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fixing layers.py construct AutoGraph">
+      <created>1586582412740</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1586582412740</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,7 +272,8 @@
     <MESSAGE value="codded persistence images vectorization by mistake; save it in case needed later" />
     <MESSAGE value="created train.py" />
     <MESSAGE value="updated model to account for batch size; finished train.py; everything works, too slow" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated model to account for batch size; finished train.py; everything works, too slow" />
+    <MESSAGE value="fixing layers.py construct AutoGraph" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing layers.py construct AutoGraph" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2226" y="509" width="1200" height="1009" key="#Docker" timestamp="1586388673475">
@@ -291,10 +300,10 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1442" y="869" width="1013" height="470" key="#com.intellij.fileTypes.FileTypeChooser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586126688335" />
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586521623312">
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586582412635">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586521623312" />
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586582412635" />
     <state x="167" y="142" width="3573" height="1918" key="DiffContextDialog" timestamp="1586333675531">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -340,19 +349,19 @@
     </state>
     <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586044819714" />
     <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586513977333" />
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586521629326">
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586582415971">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586521629326" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586582415971" />
     <state x="1476" y="856" key="com.intellij.ide.util.TipDialog" timestamp="1586344194667">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="5274" y="829" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586043060785" />
     <state x="1476" y="856" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586344194667" />
-    <state x="1598" y="984" width="690" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586423226754">
+    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586587224335">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1598" y="984" width="690" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586423226754" />
+    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586587224335" />
     <state x="1246" y="655" width="1405" height="898" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1586386017540">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>

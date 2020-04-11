@@ -42,38 +42,35 @@ class PManifoldLayer(tf.keras.layers.Layer):
             :param dgm: (None, None, m+1) np.array; dgm[:,0] is the homology class;
                         first None is the batch size, second is the number of points in the diagram
         '''
-        sum = tf.zeros(shape=(self.m,), dtype=tf.float32)
-        output = []
-        for i in range(input.shape[0]):
+
+        output_batch = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
+        for i in tf.range(tf.shape(input)[0]):
             dgm = input[i]
-            out_batch = []
-            for k in range(self.K):
-                ind = 0
+            out = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
+            sum = tf.zeros(shape=(self.m,), dtype=tf.float32)
+            for k in tf.range(self.K):
+                j = tf.constant(0)
 
-                ### Loop to TF
-                #utils.Poincare.tf_parametrization(
-                #            dgm[tf.math.count_nonzero(dgm,axis=0)][:,:,1:],axis=1)
-
-                ###
-                while ind < dgm.shape[0] and tf.math.count_nonzero(dgm[ind]) != 0:
-                    point = dgm[ind,:]
-                    hom = int(point[0]) # first element is the hom. class
+                while j < tf.shape(dgm)[0] and tf.cast(dgm[j,0], tf.int32) <= 1 and tf.math.count_nonzero(dgm[j,:]) != 0:
+                    point = dgm[j,:]
+                    hom = tf.cast(point[0], tf.int32) # first element is the hom. class
                     point = point[1:]
                     y_pnt = tf.convert_to_tensor(point, dtype=tf.float32)
                     ## TODO x_pnt has CONSTRAINTS, need to implement this
                     x_pnt = utils.Poincare.tf_parametrization(y_pnt, self.theta[k,:])
-                    t_vec_x = utils.Poincare.tf_log_map_x(self.x_o, x_pnt, 1)
-                    sum += tf.scalar_mul(self.class_w[hom], t_vec_x)
-                    ind += 1
-                x_dgm = utils.Poincare.tf_exp_map_x(self.x_o, sum, 1)
+                    t_vec_x = utils.Poincare.tf_log_map_x(self.x_o, x_pnt, 1.)
+                    sum = tf.add(sum,
+                                 tf.scalar_mul(self.class_w[hom], t_vec_x))
+                    j = tf.add(j,1)
+                x_dgm = utils.Poincare.tf_exp_map_x(self.x_o, sum, 1.)
                 y_dgm = utils.Poincare.tf_chart(x_dgm)
-                out_batch.append(y_dgm)
-            out_batch = tf.concat(out_batch, axis=0)
-            output.append(out_batch)
-            print(i)
-        output = tf.concat(output, axis=0)
-        output = tf.reshape(output, [-1, self.m*self.K])
-        return output
+                out = out.write(k, y_dgm)
+            out = out.stack()
+            out = tf.reshape(out, shape=[-1])
+            output_batch = output_batch.write(i, out)
+            tf.print(i)
+        output_batch = output_batch.stack()
+        return tf.reshape(output_batch, shape=[-1, self.m*self.K])
 
 
 class PManifoldModel(tf.keras.Model):
