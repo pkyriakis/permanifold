@@ -1,7 +1,8 @@
+import os
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 import tensorflow as tf
-import numpy as np
-import utils
+import utils, time
 
 class PManifoldLayer(tf.keras.layers.Layer):
     '''
@@ -34,6 +35,7 @@ class PManifoldLayer(tf.keras.layers.Layer):
                                    initial_value=theta_init(shape=(self.num_of_hom, ),
                                                             dtype=tf.float32),
                                    trainable=True)
+
     def call(self, input):
         '''
             Calculates output
@@ -41,15 +43,19 @@ class PManifoldLayer(tf.keras.layers.Layer):
                         first None is the batch size, second is the number of points in the diagram
         '''
         sum = tf.zeros(shape=(self.m,), dtype=tf.float32)
-
         output = []
         for i in range(input.shape[0]):
-            print(i)  
             dgm = input[i]
             out_batch = []
             for k in range(self.K):
                 ind = 0
-                while ind < dgm.shape[0] and np.count_nonzero(dgm[ind]) != 0:
+
+                ### Loop to TF
+                #utils.Poincare.tf_parametrization(
+                #            dgm[tf.math.count_nonzero(dgm,axis=0)][:,:,1:],axis=1)
+
+                ###
+                while ind < dgm.shape[0] and tf.math.count_nonzero(dgm[ind]) != 0:
                     point = dgm[ind,:]
                     hom = int(point[0]) # first element is the hom. class
                     point = point[1:]
@@ -64,6 +70,7 @@ class PManifoldLayer(tf.keras.layers.Layer):
                 out_batch.append(y_dgm)
             out_batch = tf.concat(out_batch, axis=0)
             output.append(out_batch)
+            print(i)
         output = tf.concat(output, axis=0)
         output = tf.reshape(output, [-1, self.m*self.K])
         return output
@@ -88,16 +95,17 @@ class PManifoldModel(tf.keras.Model):
                                             activation='relu')
         self.droput = tf.keras.layers.Dropout(0.2)
         self.out_layer = tf.keras.layers.Dense(units=10)
-        
-    def call(self, dgm):
+
+    @tf.function
+    def call(self, dgm, training=False):
         '''
             Call function
         '''
         x = self.in_layer(dgm)
         x = self.dense1(x)
-        x = self.batch_norm(x)
+        x = self.batch_norm(x, training=training)
         x = self.dense2(x)
-        x = self.droput(x)
+        x = self.droput(x, training=training)
         x = self.out_layer(x)
         return x
 
