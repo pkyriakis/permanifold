@@ -12,7 +12,7 @@ K = 20 # number of projection bases
 num_of_hom = 3 # number of homology classes; hardcoded for now (we know its 3 for images);
                # TODO code function to find it
 
-batch_size = 16
+batch_size = 64
 epochs = 3
 save_every = 1
 
@@ -102,6 +102,7 @@ for epoch in range(epochs):
 
   # Training step
   for step, (x_train, y_train) in enumerate(train_dataset):
+    print(type(x_train))
     # Open Gradient tape
     with tf.GradientTape() as tape:
         logits = per_model(x_train, training=True)

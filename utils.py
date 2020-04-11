@@ -1,6 +1,4 @@
 import tensorflow as tf
-import numpy as np
-from numpy import linalg as LA
 import math
 
 
@@ -37,7 +35,7 @@ class Poincare:
     @staticmethod
     def tf_project_hyp_vecs(x, c):
         # Projection op. Need to make sure hyperbolic embeddings are inside the unit ball.
-        return tf.clip_by_norm(t=x, clip_norm=(1. - Poincare.PROJ_EPS) / np.sqrt(c), axes=[0])
+        return tf.clip_by_norm(t=x, clip_norm=(1. - Poincare.PROJ_EPS) / tf.sqrt(c), axes=[0])
 
     @staticmethod
     def tf_mob_add(u, v, c):
@@ -54,7 +52,7 @@ class Poincare:
     def tf_exp_map_x(x, v, c):
         v = v + Poincare.EPS # Perturbe v to avoid dealing with v = 0
         norm_v = Poincare.tf_norm(v)
-        second_term = (Poincare.tf_tanh(np.sqrt(c) * Poincare.tf_lambda_x(x, c) * norm_v / 2) / (np.sqrt(c) * norm_v)) * v
+        second_term = (Poincare.tf_tanh(tf.sqrt(c) * Poincare.tf_lambda_x(x, c) * norm_v / 2) / (tf.sqrt(c) * norm_v)) * v
         return Poincare.tf_mob_add(x, second_term, c)
 
     @staticmethod
@@ -62,7 +60,7 @@ class Poincare:
         diff = Poincare.tf_mob_add(-x, y, c) + Poincare.EPS
         norm_diff = Poincare.tf_norm(diff)
         lam = Poincare.tf_lambda_x(x, c)
-        return (((2. / np.sqrt(c)) / lam) * Poincare.tf_atanh(np.sqrt(c) * norm_diff) / norm_diff) * diff
+        return (((2. / tf.sqrt(c)) / lam) * Poincare.tf_atanh(tf.sqrt(c) * norm_diff) / norm_diff) * diff
 
 
     @staticmethod
@@ -71,8 +69,8 @@ class Poincare:
             Transforms the Euclidean point y onto the manifold given params theta
         '''
         m = y.shape[0] # manifold dim
-        x = []
-        for i in range(m):
+        x = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
+        for i in tf.range(m, dtype=tf.int32):
             if i == 0:
                 x_i = tf.multiply(theta[0], tf.norm(y))
             elif i == m - 1:
@@ -83,8 +81,8 @@ class Poincare:
             else:
                 den = tf.norm(y[i - 1:])
                 x_i = tf.acos(y[i-1]/den) + theta[i]
-            x.append(x_i)
-        return tf.convert_to_tensor(x)
+            x = x.write(i, x_i)
+        return x.stack()
 
 
     @staticmethod
@@ -94,19 +92,22 @@ class Poincare:
         '''
         m = x.shape[0]
         if theta == None:
-            theta = [1] + [0]*(m-1)
-            theta = tf.convert_to_tensor(theta, dtype=tf.float32)
-        y = []
-        for i in range(m):
+            theta = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
+            theta.write(0,1)
+            for mm in tf.range(1,m):
+                theta = theta.write(mm,0)
+            theta = theta.stack()
+        y = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
+        for i in tf.range(m, dtype=tf.int32):
             y_i = tf.multiply(x[0],theta[0])
-            for j in range(1, i-2):
+            for j in tf.range(1, i-2):
                 y_i = tf.multiply(y_i, tf.sin(x[j] + theta[j]))
             if i == m-1:
                 y_i = tf.multiply(y_i, tf.sin(x[i]) + theta[i])
             else:
                 y_i = tf.multiply(y_i, tf.cos(x[i]) + theta[i])
-            y.append(y_i)
-        return tf.convert_to_tensor(y)
+            y = y.write(i, y_i)
+        return y.stack()
 
 
 
