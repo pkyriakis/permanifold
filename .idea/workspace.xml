@@ -19,8 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="">
+    <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="working on using gtda for PDs">
+      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/persistence_diagram.py" beforeDir="false" afterPath="$PROJECT_DIR$/persistence_diagram.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +61,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
   </component>
+  <component name="JupyterTrust" id="ec689ec1-a364-4f43-acf4-8ffa68fe6926">
+    <option name="files">
+      <option value="classifying_shapes.ipynb" />
+    </option>
+  </component>
   <component name="ProjectId" id="1a5gVlGJMBjL5b7Oin1VKiMcAMM" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -70,7 +79,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/main.py" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.notebooks.jupyter.connections.configuration.JupyterServerConfigurable" />
   </component>
   <component name="RunManager" selected="Docker.Dockerfile">
     <configuration name="Unnamed" type="PyRemoteDebugConfigurationType" factoryName="Python Remote Debug" nameIsGenerated="true">
@@ -156,11 +165,16 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SshConsoleOptionsProvider">
+    <option name="myEncoding" value="UTF-8" />
+    <option name="myConnectionType" value="SSH_CONFIG" />
+    <option name="myConnectionId" value="weaver@35.233.198.236:22 key" />
+  </component>
   <component name="StructureViewFactory">
-    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED,ALPHA_COMPARATOR" />
+    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED" />
   </component>
   <component name="SvnConfiguration">
-    <configuration />
+    <configuration>$USER_HOME$/.subversion</configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -183,7 +197,8 @@
       <workItem from="1586513940832" duration="16741000" />
       <workItem from="1586567040866" duration="3358000" />
       <workItem from="1586570941346" duration="15720000" />
-      <workItem from="1586601015715" duration="8430000" />
+      <workItem from="1586601015715" duration="17166000" />
+      <workItem from="1586729820110" duration="26285000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -255,7 +270,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586630137937</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fixing layers.py construct AutoGraph">
+      <created>1586669150455</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1586669150455</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -285,6 +307,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="fixing layers.py construct AutoGraph" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="1348" y="600" width="1200" height="1009" key="#Deployment" timestamp="1586766792651">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1348" y="600" width="1200" height="1009" key="#Deployment/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586766792651" />
     <state x="2226" y="509" width="1200" height="1009" key="#Docker" timestamp="1586388673475">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -301,42 +327,46 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1348" y="600" width="1200" height="1009" key="#Servers/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586174614737" />
-    <state x="1404" y="684" width="1728" height="833" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586388777380">
+    <state x="1404" y="684" width="1728" height="833" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586766388167">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1404" y="684" width="1728" height="833" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586388777380" />
+    <state x="1404" y="684" width="1728" height="833" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586766388167" />
     <state x="1442" y="869" width="1013" height="470" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1586126688335">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1442" y="869" width="1013" height="470" key="#com.intellij.fileTypes.FileTypeChooser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586126688335" />
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586630137827">
+    <state x="1589" y="775" width="774" height="688" key="#com.intellij.tools.ToolEditorDialog" timestamp="1586766206369">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586630137827" />
+    <state x="1589" y="775" width="774" height="688" key="#com.intellij.tools.ToolEditorDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586766206369" />
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586669192058">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586669192058" />
     <state x="167" y="142" width="3573" height="1918" key="DiffContextDialog" timestamp="1586333675531">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="167" y="142" width="3573" height="1918" key="DiffContextDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586333675531" />
-    <state x="2000" y="1012" width="691" height="746" key="FileChooserDialogImpl" timestamp="1586385831273">
+    <state x="2000" y="1012" width="691" height="746" key="FileChooserDialogImpl" timestamp="1586766346180">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="2000" y="1012" width="691" height="746" key="FileChooserDialogImpl/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586385831273" />
-    <state width="3703" height="733" key="GridCell.Tab.0.bottom" timestamp="1586418343798">
+    <state x="2000" y="1012" width="691" height="746" key="FileChooserDialogImpl/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586766346180" />
+    <state width="3703" height="443" key="GridCell.Tab.0.bottom" timestamp="1586770816398">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state width="3703" height="733" key="GridCell.Tab.0.bottom/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586418343798" />
-    <state width="3703" height="733" key="GridCell.Tab.0.center" timestamp="1586418343798">
+    <state width="3703" height="443" key="GridCell.Tab.0.bottom/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586770816398" />
+    <state width="3703" height="443" key="GridCell.Tab.0.center" timestamp="1586770816397">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state width="3703" height="733" key="GridCell.Tab.0.center/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586418343798" />
-    <state width="3703" height="733" key="GridCell.Tab.0.left" timestamp="1586418343798">
+    <state width="3703" height="443" key="GridCell.Tab.0.center/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586770816397" />
+    <state width="3703" height="443" key="GridCell.Tab.0.left" timestamp="1586770816397">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state width="3703" height="733" key="GridCell.Tab.0.left/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586418343798" />
-    <state width="3703" height="733" key="GridCell.Tab.0.right" timestamp="1586418343798">
+    <state width="3703" height="443" key="GridCell.Tab.0.left/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586770816397" />
+    <state width="3703" height="443" key="GridCell.Tab.0.right" timestamp="1586770816397">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state width="3703" height="733" key="GridCell.Tab.0.right/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586418343798" />
+    <state width="3703" height="443" key="GridCell.Tab.0.right/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586770816397" />
     <state width="3703" height="733" key="GridCell.Tab.1.bottom" timestamp="1586418343798">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -353,36 +383,48 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state width="3703" height="733" key="GridCell.Tab.1.right/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586418343798" />
-    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor" timestamp="1586513977333">
+    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor" timestamp="1586769829721">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586044819714" />
-    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586513977333" />
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586630141205">
+    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586769829721" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586669203446">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586630141205" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586669203446" />
+    <state width="1886" height="1059" key="XDebugger.FullValuePopup" timestamp="1586770708239">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state width="1886" height="1059" key="XDebugger.FullValuePopup/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586770708239" />
     <state x="1476" y="856" key="com.intellij.ide.util.TipDialog" timestamp="1586344194667">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="5274" y="829" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586043060785" />
     <state x="1476" y="856" key="com.intellij.ide.util.TipDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586344194667" />
-    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586587224335">
+    <state x="1327" y="510" width="1243" height="1188" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1586773073791">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586587224335" />
+    <state x="1327" y="510" width="1243" height="1188" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586773073791" />
+    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586736542482">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586736542482" />
     <state x="1246" y="655" width="1405" height="898" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1586386017540">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1246" y="655" width="1405" height="898" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586386017540" />
+    <state x="1801" y="662" width="293" height="891" key="ftp.server.browser" timestamp="1586766742487">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1801" y="662" width="293" height="891" key="ftp.server.browser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586766742487" />
     <state x="1452" y="801" width="993" height="606" key="git4idea.merge.GitPullDialog" timestamp="1586206320861">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1452" y="801" width="993" height="606" key="git4idea.merge.GitPullDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206320861" />
-    <state x="1440" y="523" width="1023" height="1470" key="search.everywhere.popup" timestamp="1586506362424">
+    <state x="1440" y="523" width="1023" height="1470" key="search.everywhere.popup" timestamp="1586771469945">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1440" y="523" width="1023" height="1470" key="search.everywhere.popup/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586506362424" />
+    <state x="1440" y="523" width="1023" height="1470" key="search.everywhere.popup/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586771469945" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PerManifold$main.coverage" NAME="main Coverage Results" MODIFIED="1586386027930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
