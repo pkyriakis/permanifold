@@ -77,8 +77,10 @@ class PManifoldModel(tf.keras.Model):
     '''
         Build a Keras model using the PManifoldLayer as input layer
     '''
-    def __init__(self, K, m, num_of_hom, units = [256, 128]):
+    def __init__(self, K, m, num_of_hom, units=None):
         super(PManifoldModel, self).__init__()
+        if units is None:
+            units = [256, 128]
         self.K = K
         self.m = m
         self.num_of_hom = num_of_hom
