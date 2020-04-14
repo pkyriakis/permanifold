@@ -1,6 +1,9 @@
 import math
 
 import os
+import pickle
+import timeit
+
 from scipy.stats import multivariate_normal
 import matplotlib.pyplot as plt
 from collections import defaultdict
@@ -16,11 +19,9 @@ from gtda.homology import CubicalPersistence
 
 
 class PDiagram():
-    def __init__(self, images, fil_parms, images_id='mnist', num_of_fil=500, man_dim=9):
+    def __init__(self, images, fil_parms, images_id='mnist', man_dim=9):
         self.images = images
-        self.dgms_dir = 'data/dgms/' + images_id + "/"
-        self.vdgms_dir = 'data/vdgms/' + images_id + "/"
-        self.edgms_dir = 'data/edgms/' + images_id + "/"
+        self.save_dir = 'data/diagrams/' + images_id + "/"
         self.fil_params = fil_parms
 
         self.man_dim = man_dim
@@ -33,33 +34,18 @@ class PDiagram():
         self.dgms_dict = self.manager.dict()
         self.vdgms_dict = self.manager.dict()
         self.edgms_dict = self.manager.dict()
-        self.done = multiprocessing.Value("i", len(self.dgms_dict))
+        self.done = multiprocessing.Value("i", 0)
 
-        # if not os.path.exists(self.dgms_dir):
-        #     os.makedirs(self.dgms_dir)
-        #     os.makedirs(self.dgms_dir)
-        #     self.done = multiprocessing.Value("i", 0)
-        # else:
-        #     self.dgms_dict = self.__load_pds(self.dgms_dir)
-        #     self.done = multiprocessing.Value("i", len(self.dgms_dict))
-        #
-        # if not os.path.exists(self.vdgms_dir):
-        #     os.makedirs(self.vdgms_dir)
-        # else:
-        #     self.vdgms_dict = self.__load_pds(self.vdgms_dir)
-        #
-        # if not os.path.exists(self.edgms_dir):
-        #     os.makedirs(self.edgms_dir)
-        # else:
-        #     self.edgms_dict = self.__load_pds(self.edgms_dir)
+        if not os.path.exists(self.save_dir):
+            os.makedirs(self.save_dir)
 
     def __update_progress(self):
         '''
-            Prints a progress
+            Prints the progress
         '''
         while self.done.value <= self.num_images:
             print('Done {}/{}'.format(self.done.value, self.num_images), end="\r")
-            if self.done.value < self.num_images:
+            if self.done.value < self.num_images - 1:
                 sleep(10)
             else:
                 return
@@ -132,16 +118,21 @@ class PDiagram():
                     dgm_image[filtration] = height_dict
                 if filtration == 'radial':
                     radial_dict = dict()
-                    for i in range(params.shape[0]):
-                        radial_fil = RadialFiltration(center=params[i])
-                        filtered = radial_fil.fit_transform(bin_image)
-                        filtered = filtered / np.max(filtered)
-                        radial_dict[i] = np.squeeze(cubical.fit_transform(filtered))
+                    center = params['center']
+                    radius = params['radius']
+                    cnt = 0
+                    for i in range(center.shape[0]):
+                        for j in range(radius.shape[0]):
+                            radial_fil = RadialFiltration(center=center[i], radius=radius[j])
+                            filtered = radial_fil.fit_transform(bin_image)
+                            filtered = filtered / np.max(filtered)
+                            radial_dict[cnt] = np.squeeze(cubical.fit_transform(filtered))
+                            cnt += 1
                     dgm_image[filtration] = radial_dict
                 if filtration == 'dilation':
                     dil_dict = dict()
                     for i in range(len(params)):
-                        dial_fil = DilationFiltration(n_iterations=params[i])
+                        dial_fil = DilationFiltration(n_iterations=int(params[i]))
                         filtered = dial_fil.fit_transform(bin_image)
                         filtered = filtered / np.max(filtered)
                         dil_dict[i] = np.squeeze(cubical.fit_transform(filtered))
@@ -149,7 +140,7 @@ class PDiagram():
                 if filtration == 'erosion':
                     er_dict = dict()
                     for i in range(len(params)):
-                        er_fil = ErosionFiltration(n_iterations=params[i])
+                        er_fil = ErosionFiltration(n_iterations=int(params[i]))
                         filtered = er_fil.fit_transform(bin_image)
                         filtered = filtered / np.max(filtered)
                         er_dict[i] = np.squeeze(cubical.fit_transform(filtered))
@@ -159,7 +150,8 @@ class PDiagram():
                 self.dgms_dict[index] = dgm_image
                 self.done.value += 1
 
-    def __appr_integral(self, fun, x_low, x_up, y_low, y_up, K=3):
+
+    def __appr_integral(self, fun, x_low, x_up, y_low, y_up, K=5):
         '''
             Approxiamates the 2d integral of the given function over a K-grid
         '''
@@ -177,10 +169,9 @@ class PDiagram():
         '''
             Vectorize the given chunk of PDs
         '''
-        cov =  np.eye(2)
+        cov =  .2*np.eye(2)
         phi = lambda x, y, mu: multivariate_normal(mean=mu, cov=cov).pdf([x, y])
         grid_dim = int(np.sqrt(self.man_dim) + 1)
-
         for index in chunk:
             dgms = self.dgms_dict[index]
             vdgms = dict()
@@ -211,9 +202,8 @@ class PDiagram():
                             sum([mult * phi(x, y, list(mu)) for mu, mult in unique_points.items()])
 
                         cnt = 0
+
                         lin_space = np.linspace(0, 1, grid_dim)
-                        x_low = lin_space[0]
-                        y_low = lin_space[0]
                         # Compute vectorization
                         lin_space = np.linspace(0, 1, grid_dim)
                         mx, my = np.meshgrid(lin_space, lin_space)
@@ -223,8 +213,7 @@ class PDiagram():
                                 x_up = mx[i, j + 1]
                                 y_low = my[i, j]
                                 y_up = my[i + 1, j]
-                                integral, error = dblquad(rho, y_low, y_up, x_low, x_up)
-                                vectorized_dgm[cnt, int(hom)] = integral
+                                vectorized_dgm[cnt, int(hom)] = self.__appr_integral(rho, x_low, x_up, y_low, y_up )
                                 cnt += 1
 
                     vdgms_filtration[ind] = vectorized_dgm
@@ -232,7 +221,6 @@ class PDiagram():
             # Store it in dict
             self.vdgms_dict[index] = vdgms
             self.done.value += 1
-        self.__save_pds(self.vdgms_dict, self.vdgms_dir, chunk)
 
     def __embed_pds_chunk(self, chunk):
         '''
@@ -266,7 +254,6 @@ class PDiagram():
                     unique_points[tuple(point)] += 1
             self.done.value += 1
             self.edgms_dict[index] = np.array(embeded_points)
-        self.__save_pds(self.edgms_dict, self.edgms_dir, chunk)
 
     def __run_parallel(self, target, indices):
         '''
@@ -282,10 +269,10 @@ class PDiagram():
             p.start()
             jobs.append(p)
 
-        # Start a job to update progress bar
-        # p = multiprocessing.Process(target=self.__update_progress)
-        # jobs.append(p)
-        # p.start()
+        #Start a job to update progress bar
+        p = multiprocessing.Process(target=self.__update_progress)
+        jobs.append(p)
+        p.start()
 
         for job in jobs:
             job.join()
@@ -303,6 +290,11 @@ class PDiagram():
             print('Computing persistence diagrams...')
             self.__run_parallel(self.__compute_pds_chunk, inds_left)
 
+        # # Save to file
+        out_file = open(self.save_dir + 'dgms.pkl', 'wb')
+        pickle.dump([self.fil_params, self.vdgms_dict.copy()], out_file)
+        out_file.close()
+
         return self.dgms_dict
 
     def get_vectorized_pds(self):
@@ -319,6 +311,12 @@ class PDiagram():
         if len(inds_left) > 0:
             print('Vectorizing persistence diagrams...')
             self.__run_parallel(self.__vectorize_pds_chunk, inds_left)
+
+        # # Store to file
+        out_file = open(self.save_dir + 'vectorized_dgms.pkl', 'wb')
+        pickle.dump([self.fil_params, self.vdgms_dict.copy()], out_file)
+        out_file.close()
+
         return self.vdgms_dict
 
     def get_embedded_pds(self):
