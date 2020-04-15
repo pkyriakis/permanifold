@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" serverName="Deep">
     <serverData>
+      <paths name="Deep">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/Projects/permanifold" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="TF Instance">
         <serverdata>
           <mappings>
