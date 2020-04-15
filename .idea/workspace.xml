@@ -19,16 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/testing_notebook.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/layers.py" beforeDir="false" afterPath="$PROJECT_DIR$/layers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/persistence_diagram.py" beforeDir="false" afterPath="$PROJECT_DIR$/persistence_diagram.py" afterDir="false" />
-    </list>
+    <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -207,7 +198,7 @@
       <workItem from="1586570941346" duration="15720000" />
       <workItem from="1586601015715" duration="17166000" />
       <workItem from="1586729820110" duration="30299000" />
-      <workItem from="1586851689882" duration="17057000" />
+      <workItem from="1586851689882" duration="17734000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -300,7 +291,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586811841998</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="finilized persistence_diagram.py using gtda and persistant images for vectorization">
+      <created>1586907567976</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1586907567976</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -328,7 +326,8 @@
     <MESSAGE value="updated model to account for batch size; finished train.py; everything works, too slow" />
     <MESSAGE value="fixing layers.py construct AutoGraph" />
     <MESSAGE value="coded the part to extract PDs for different filtrations" />
-    <option name="LAST_COMMIT_MESSAGE" value="coded the part to extract PDs for different filtrations" />
+    <MESSAGE value="finilized persistence_diagram.py using gtda and persistant images for vectorization" />
+    <option name="LAST_COMMIT_MESSAGE" value="finilized persistence_diagram.py using gtda and persistant images for vectorization" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1348" y="600" width="1200" height="1009" key="#Deployment" timestamp="1586902302727">
@@ -367,10 +366,10 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1589" y="775" width="774" height="688" key="#com.intellij.tools.ToolEditorDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586843833616" />
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586811841959">
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2" timestamp="1586907567862">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586811841959" />
+    <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586907567862" />
     <state x="167" y="142" width="3573" height="1918" key="DiffContextDialog" timestamp="1586867506573">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -416,10 +415,10 @@
     </state>
     <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586044819714" />
     <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586902212142" />
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586811871489">
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1586907573496">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586811871489" />
+    <state x="1348" y="712" width="1200" height="785" key="Vcs.Push.Dialog.v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586907573496" />
     <state width="1886" height="1059" key="XDebugger.FullValuePopup" timestamp="1586863157606">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -433,10 +432,10 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1327" y="510" width="1243" height="1188" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586773073791" />
-    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586736542482">
+    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586927304618">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
-    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586736542482" />
+    <state x="1598" y="984" width="699" height="255" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586927304618" />
     <state x="1246" y="655" width="1405" height="898" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1586386017540">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
