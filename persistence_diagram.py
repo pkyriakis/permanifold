@@ -50,29 +50,6 @@ class PDiagram():
             else:
                 return
 
-    def __load_pds(self, dir):
-        '''
-            Loads if present in dir
-        :return:
-        '''
-        dct = dict()
-        for filename in os.listdir(dir):
-            with open(os.path.join(dir, filename), 'rb') as f:
-                input = np.load(f, allow_pickle=True)
-                for key in input.keys():
-                    dct[int(key)] = input[key]
-        return dct
-
-    def __save_pds(self, dct, dir, chunk):
-        '''
-            Saves the given dict from start to end (not inclusive)
-        :return:
-        '''
-        dgms_dict_to_save = dict()  # contains an entry for each image/diagram, keyed by the index of the image in self.images
-        for index in chunk:
-            dgms_dict_to_save[str(index)] = dct[index]
-        rnd = random.randint(0, 10000000)
-        np.savez(dir + "ckpnt_" + str(rnd), **dgms_dict_to_save)
 
     def __chunks(self, lst, n):
         '''
@@ -259,7 +236,7 @@ class PDiagram():
         '''
             Parellel run of target; the given list of indices creates the chunks to allocate to each cpu
         '''
-        cpus = 2 * multiprocessing.cpu_count()  # leave one cpu free
+        cpus = multiprocessing.cpu_count()  # leave one cpu free
         chuck_size = math.ceil(len(indices) / cpus)
 
         jobs = []
@@ -269,30 +246,32 @@ class PDiagram():
             p.start()
             jobs.append(p)
 
-        #Start a job to update progress bar
-        p = multiprocessing.Process(target=self.__update_progress)
-        jobs.append(p)
-        p.start()
+        # #Start a job to update progress bar
+        # p = multiprocessing.Process(target=self.__update_progress)
+        # jobs.append(p)
+        # p.start()
 
         for job in jobs:
             job.join()
 
     def get_pds(self):
         '''
-            Calculates the peristence diagrams of all images
-        :return: a dict of lists, keyed by the index of image
+            Calculates the persistence diagrams of all images
+        :return: a dict, keyed by the index of image
         '''
 
-        computed_inds = list(self.dgms_dict.keys())
-        inds_left = list(filter(lambda i: i not in computed_inds, self.img_inds))
+        # Check if already there
+        fname = self.save_dir + 'dgms.pkl'
+        if os.path.exists(fname):
+            [self.fil_params, self.dgms_dict] = pickle.load(open(fname, 'rb'))
+            return self.dgms_dict
 
-        if len(inds_left) > 0:
-            print('Computing persistence diagrams...')
-            self.__run_parallel(self.__compute_pds_chunk, inds_left)
+        print('Computing persistence diagrams...')
+        self.__run_parallel(self.__compute_pds_chunk, self.img_inds)
 
         # # Save to file
-        out_file = open(self.save_dir + 'dgms.pkl', 'wb')
-        pickle.dump([self.fil_params, self.vdgms_dict.copy()], out_file)
+        out_file = open(fname, 'wb')
+        pickle.dump([self.fil_params, self.dgms_dict.copy()], out_file)
         out_file.close()
 
         return self.dgms_dict
