@@ -1,61 +1,95 @@
 import datetime
-import os
+import os, math
 
 import persistence_diagram
 import tensorflow as tf
 import layers
 import numpy as np
 import utils
-
-man_dim = 9 # Dimension of the manifold
-K = 20 # number of projection bases
-num_of_hom = 3 # number of homology classes; hardcoded for now (we know its 3 for images);
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+man_dim = 2 # Dimension of the manifold
+K = 28 # number of projection bases
+num_of_hom = 2 # number of homology classes; hardcoded for now (we know its 3 for images);
                # TODO code function to find it
 
-batch_size = 64
+batch_size = 512
 epochs = 3
 save_every = 1
 
 def pad_diagrams(dgms):
     '''
-        Adds zeros points to the diagrams to make the of equal size; tensorflow cant handle inputs with varied size
+        Adds zeros points to the diagrams to make them of equal size; tensorflow cant handle inputs with varied size
     '''
     # Get the highest number of points in a PD
     max_num_of_pnts = 0
     for ind in dgms.keys():
-        dgm = dgms[ind]
-        max_num_of_pnts = max(max_num_of_pnts, dgm.shape[0])
+        num_of_dgms = 0
+        for filtration in dgms[ind].keys():
+            for par_ind in dgms[ind][filtration].keys():
+                dgm = dgms[ind][filtration][par_ind]
+                max_num_of_pnts = max(max_num_of_pnts, dgm.shape[0])
+                num_of_dgms += 1
 
     # Pad
-    x = []
+    max_num_of_pnts = 77
+    N = len(dgms.keys())
+    out = np.zeros([N,num_of_dgms,max_num_of_pnts,man_dim+1], dtype=np.float32)
     for ind in dgms.keys():
-        dgm = dgms[ind]
-        x_padded = np.zeros((max_num_of_pnts, man_dim+1)) # plus one cus the first item of each poin is the homology class
-        x_padded[:dgm.shape[0],:] = dgm
-        x.append(x_padded)
-    return np.array(x)
+        cnt = 0
+        for filtration in dgms[ind].keys():
+            for par_ind in dgms[ind][filtration].keys():
+                dgm = dgms[ind][filtration][par_ind]
+                out[ind,cnt,:dgm.shape[0],:] = dgm
+                cnt += 1
+    return out
 
 
 # Obtain the data
 img_id = 'mnist'
 train_images, train_labels, test_images, test_labels = utils.get_mnist_data()
-train_images = train_images[:3000]
-train_labels = train_labels[:3000]
-test_images = test_images[:500]
-test_labels = test_labels[:500]
+train_images = train_images.reshape(train_images.shape[0], 28*28).astype('float32')
+test_images = test_images.reshape(test_images.shape[0], 28*28).astype('float32')
 
+## Set the params of the filtrations
+# Height filtration
+num_of_vects = 6
+angles = np.linspace(0, math.pi/2, num_of_vects)
+dirs = [[round(math.cos(theta),2),round(math.sin(theta),2)] for theta in angles]
+dirs = np.array(dirs)
+
+# Radial filtration
+center = np.array([[10,10], [10,20], [20,10], [20,20]])
+radius = np.array([5, 10, 15])
+
+# Erosion filtration
+n_iter_er = np.array([1,2,3,50])
+
+# Dilation filtration
+n_iter_dil = np.array([1,3,5,10,50])
+
+params = {'cubical' : None,
+         'height': dirs,
+         'radial': {'center' : center,
+                    'radius' : radius
+                    },
+         'erosion': n_iter_er,
+         'dilation': n_iter_dil
+         }
 # Get persistence diagrams
-pd_train = persistence_diagram.PDiagram(train_images, images_id = img_id + '_train')
-pd_test = persistence_diagram.PDiagram(test_images, images_id = img_id + '_test')
+pd_train = persistence_diagram.PDiagram(train_images, fil_parms=params, images_id='mnist_train')
+pd_test = persistence_diagram.PDiagram(test_images, fil_parms=params, images_id='mnist_test')
 
 # Get train test data
-dgms_train = pd_train.get_embedded_pds()
-dgms_test = pd_test.get_embedded_pds()
+dgms_train = pd_train.get_pds()
+print(len(dgms_train.keys()))
+dgms_test = pd_test.get_pds()
 x_train = pad_diagrams(dgms_train)
 x_test = pad_diagrams(dgms_test)
 y_train = train_labels
 y_test = test_labels
-
+# x_train = x_train.reshape(60000,77*28*3)
+# x_test = x_test.reshape(10000,77*28*3)
+#
 # Create TF dataset
 train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 train_dataset = train_dataset.shuffle(buffer_size=1024).batch(batch_size)
@@ -67,7 +101,7 @@ test_dataset = test_dataset.shuffle(buffer_size=1024).batch(batch_size)
 per_model = layers.PManifoldModel(K, man_dim, num_of_hom)
 
 # Instantiate an optimizer and loss
-optimizer = tf.keras.optimizers.Adam()
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
 loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
 # Instantiate performance metrics
@@ -83,69 +117,45 @@ test_log_dir = 'logs/' + img_id + '/' + current_time + '/test'
 train_summary_writer = tf.summary.create_file_writer(train_log_dir)
 test_summary_writer = tf.summary.create_file_writer(test_log_dir)
 
-# Set up checkpoints
-checkpoint_directory = ".tmp/training_checkpoints/" + img_id
-checkpoint = tf.train.Checkpoint(step=tf.Variable(1),
-                                 optimizer=optimizer, model=per_model)
-manager = tf.train.CheckpointManager(checkpoint, checkpoint_directory, max_to_keep=3)
+# # Set up checkpoints
+# checkpoint_directory = ".tmp/training_checkpoints/" + img_id
+# checkpoint = tf.train.Checkpoint(step=tf.Variable(1),
+#                                  optimizer=optimizer, model=per_model)
+# manager = tf.train.CheckpointManager(checkpoint, checkpoint_directory, max_to_keep=3)
 
 # Load weights if any
-checkpoint.restore(manager.latest_checkpoint)
-if manager.latest_checkpoint:
-    print("Restored from {}".format(manager.latest_checkpoint))
-else:
-    print("Training from scratch.")
+# checkpoint.restore(manager.latest_checkpoint)
+# if manager.latest_checkpoint:
+#     print("Restored from {}".format(manager.latest_checkpoint))
+# else:
+#     print("Training from scratch.")
+
+# inputs = tf.keras.Input(shape=(28*77*3,), name='digits')
+# x = tf.keras.layers.Dense(256, activation='relu', name='dense_1')(inputs)
+# x = tf.keras.layers.Dense(256, activation='relu')(x)
+# x = tf.keras.layers.Dense(128, activation='relu', name='dense_2')(x)
+# outputs = tf.keras.layers.Dense(10, name='predictions')(x)
+#
+# model = tf.keras.Model(inputs=[inputs], outputs=outputs)
+
+per_model.compile(optimizer=tf.keras.optimizers.Adam(),  # Optimizer
+               # Loss function to minimize
+               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+               # List of metrics to monitor
+               metrics=['sparse_categorical_accuracy']
+               )
+#
+# print('# Fit model on training data')
+history = per_model.fit(x_train, y_train,
+                    batch_size=64,
+                    epochs=10,
+                    validation_data=(x_test,y_test)
+                    )
+#
+# print('\nhistory dict:', history.history)
 
 # Train and test
-for epoch in range(epochs):
-  print('Start of epoch %d' % (epoch,))
 
-  # Training step
-  for step, (x_train, y_train) in enumerate(train_dataset):
-    print(type(x_train))
-    # Open Gradient tape
-    with tf.GradientTape() as tape:
-        logits = per_model(x_train, training=True)
-        loss = loss_fn(y_train, logits)
-    grads = tape.gradient(loss, per_model.trainable_variables)
-    optimizer.apply_gradients(zip(grads, per_model.trainable_variables))
-    train_loss(loss)
-    train_accuracy(y_train,logits)
-
-    # Save logs
-    with train_summary_writer.as_default():
-        tf.summary.scalar('loss', train_loss.result(), step=epoch)
-        tf.summary.scalar('accuracy', train_accuracy.result(), step=epoch)
-
-    # Save checkpoint
-    checkpoint.step.assign_add(1)
-    if int(checkpoint.step) % save_every == 0:
-        manager.save()
-        print('Training loss (for one batch) at step %s: %s' % (step, float(loss)))
-        print('Seen so far: %s samples' % ((step + 1) * batch_size))
-
-  # Test step
-  for step, (x_test, y_test) in enumerate(test_dataset):
-      logits = per_model(x_test, training=False)
-      loss = loss_fn(y_test, logits)
-      test_loss(loss)
-      test_accuracy(y_test, logits)
-
-      # Save logs
-      with test_summary_writer.as_default():
-          tf.summary.scalar('loss', test_loss.result(), step=epoch)
-          tf.summary.scalar('accuracy', test_accuracy.result(), step=epoch)
-
-      # Print every 100 batches.
-      if step % save_every == 0:
-          print('Test loss (for one batch) at step %s: %s' % (step, float(loss)))
-          print('Seen so far: %s samples' % ((step + 1) * batch_size))
-
-      # Reset metrics every epoch
-      train_loss.reset_states()
-      test_loss.reset_states()
-      train_accuracy.reset_states()
-      test_accuracy.reset_states()
 
 
 

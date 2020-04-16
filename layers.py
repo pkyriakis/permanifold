@@ -11,7 +11,7 @@ class PManifoldLayer(tf.keras.layers.Layer):
         its points embedded in a m-dim Euclidean space
     '''
 
-    def __init__(self, K, m, num_of_hom):
+    def __init__(self, K, man_dim, num_of_hom):
         '''
             Initializes layer params, i.e theta's
             :param K: the number of projection bases
@@ -20,15 +20,15 @@ class PManifoldLayer(tf.keras.layers.Layer):
         '''
         super(PManifoldLayer, self).__init__()
         self.K = K
-        self.m = m
+        self.man_dim = man_dim
         self.num_of_hom = num_of_hom
-        self.x_o = tf.zeros(shape=(self.m,)) # the fixed point on the manifold
+        self.x_o = tf.zeros(shape=(self.man_dim,)) # the fixed point on the manifold
 
 
         # Lernable vars
         theta_init = tf.random_normal_initializer()
         self.theta = tf.Variable(name='theta',
-                                 initial_value=theta_init(shape=(K, m),
+                                 initial_value=theta_init(shape=(self.K, self.man_dim),
                                                           dtype=tf.float32),
                                  trainable=True)
         self.class_w = tf.Variable(name='class_weight',
@@ -36,77 +36,61 @@ class PManifoldLayer(tf.keras.layers.Layer):
                                                             dtype=tf.float32),
                                    trainable=True)
 
+    def compute_output_shape(self, input_shape):
+        '''
+            Returns the shape of the output tensor
+        '''
+        return [input_shape[0], 2*self.K*self.man_dim]
+
+
     def call(self, input):
         '''
             Calculates output
-            :param dgm: (None, None, m+1) np.array; dgm[:,0] is the homology class;
-                        first None is the batch size, second is the number of points in the diagram
         '''
-
-        output_batch = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
-        for i in tf.range(tf.shape(input)[0]):
-            dgm = input[i]
-            out = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
-            sum = tf.zeros(shape=(self.m,), dtype=tf.float32)
+        out = tf.TensorArray(tf.float32, size=0, dynamic_size=True)
+        for b in tf.range(input.shape[0]):
             for k in tf.range(self.K):
-                j = tf.constant(0)
-
-                while j < tf.shape(dgm)[0] and tf.cast(dgm[j,0], tf.int32) <= 1 and tf.math.count_nonzero(dgm[j,:]) != 0:
-                    point = dgm[j,:]
-                    hom = tf.cast(point[0], tf.int32) # first element is the hom. class
-                    point = point[1:]
-                    y_pnt = tf.convert_to_tensor(point, dtype=tf.float32)
-                    ## TODO x_pnt has CONSTRAINTS, need to implement this
-                    x_pnt = utils.Poincare.tf_parametrization(y_pnt, self.theta[k,:])
-                    t_vec_x = utils.Poincare.tf_log_map_x(self.x_o, x_pnt, 1.)
-                    sum = tf.add(sum,
-                                 tf.scalar_mul(self.class_w[hom], t_vec_x))
-                    j = tf.add(j,1)
-                x_dgm = utils.Poincare.tf_exp_map_x(self.x_o, sum, 1.)
-                y_dgm = utils.Poincare.tf_chart(x_dgm)
-                out = out.write(k, y_dgm)
-            out = out.stack()
-            out = tf.reshape(out, shape=[-1])
-            output_batch = output_batch.write(i, out)
-            tf.print(i)
-        output_batch = output_batch.stack()
-        return tf.reshape(output_batch, shape=[-1, self.m*self.K])
 
 
-class PManifoldModel(tf.keras.Model):
+
+
+class PManifoldModel():
     '''
         Build a Keras model using the PManifoldLayer as input layer
     '''
-    def __init__(self, K, m, num_of_hom, units=None):
+    def __init__(self, input_shape, num_of_hom, K, units=None):
         super(PManifoldModel, self).__init__()
         if units is None:
             units = [256, 128]
-        self.K = K
-        self.m = m
+        self.num_of_fil = input_shape[0]
+        self.max_num_of_points = input_shape[1]
+        self.man_dim = input_shape[2] - 1
         self.num_of_hom = num_of_hom
 
-        self.in_layer = PManifoldLayer(K, m, num_of_hom)
-        self.dense1 = tf.keras.layers.Dense(units[0],
-                                            input_shape=(K*m,),
-                                            activation='relu')
-        self.batch_norm = tf.keras.layers.BatchNormalization()
-        self.dense2 = tf.keras.layers.Dense(units[1],
-                                            activation='relu')
-        self.droput = tf.keras.layers.Dropout(0.2)
-        self.out_layer = tf.keras.layers.Dense(units=10)
+        self.in_layer = []
+        inputs = []
+        for _ in range(self.num_of_fil):
+            pm_layer = PManifoldLayer(K, self.man_dim, self.num_of_hom)
+            cur_input = tf.keras.Input(shape=(self.max_num_of_points, num_of_hom))
+            inputs.append(cur_input)
+            self.in_layer.append(pm_layer(cur_input))
 
-    @tf.function
-    def call(self, dgm, training=False):
-        '''
-            Call function
-        '''
-        x = self.in_layer(dgm)
-        x = self.dense1(x)
-        x = self.batch_norm(x, training=training)
-        x = self.dense2(x)
-        x = self.droput(x, training=training)
-        x = self.out_layer(x)
-        return x
+        self.in_layer = tf.concat(self.in_layer, axis=-1)
+        self.dense1 = tf.keras.layers.Dense(units[0],
+                                            input_shape=(self.num_of_fil*self.man_dim,),
+                                            activation='relu')(self.in_layer)
+        self.batch_norm = tf.keras.layers.BatchNormalization()(self.dense1)
+        self.dense2 = tf.keras.layers.Dense(units[1],
+                                            activation='relu')(self.batch_norm)
+        self.dropout = tf.keras.layers.Dropout(0.2)(self.dense2)
+        self.out_layer = tf.keras.layers.Dense(units=10)(self.dropout)
+
+        model = tf.keras.Model(inputs=[inputs], outputs=self.out_layer)
+
+
+    def train(self, x_train, y_train, x_test, y_test):
+        pass
+
 
 
 
