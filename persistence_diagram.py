@@ -72,7 +72,6 @@ class PDiagram():
             Computes the PDs for the given chunk of images using the params set in the self.fil_params
         :return:
         '''
-
         for index in chunk:
             image = np.expand_dims(self.images[index], axis=0)
             bin = Binarizer()
@@ -253,6 +252,7 @@ class PDiagram():
 
         for job in jobs:
             job.join()
+
 
     def get_pds(self):
         '''

@@ -8,7 +8,7 @@ class Poincare:
         such as exp and log maps and the coordinate chart and parameterization
     '''
     PROJ_EPS = 1e-5
-    EPS = 1e-15
+    EPS = 1e-5
     MAX_TANH_ARG = 15.0
 
     @staticmethod
@@ -86,26 +86,23 @@ class Poincare:
 
 
     @staticmethod
-    def tf_chart(x, theta=None):
+    def tf_chart(x):
         '''
             Transforms the manifold point x to the Euclidean space
         '''
         m = x.shape[0]
-        if theta == None:
-            theta = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
-            theta.write(0,1)
-            for mm in tf.range(1,m):
-                theta = theta.write(mm,0)
-            theta = theta.stack()
         y = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
-        for i in tf.range(m, dtype=tf.int32):
-            y_i = tf.multiply(x[0],theta[0])
-            for j in tf.range(1, i-2):
-                y_i = tf.multiply(y_i, tf.sin(x[j] + theta[j]))
+        y_0 = tf.multiply(x[0], tf.cos(x[1]))
+        y.write(0,y_0)
+        for i in tf.range(1, m, dtype=tf.int32):
+            y_i = x[0]
             if i == m-1:
-                y_i = tf.multiply(y_i, tf.sin(x[i]) + theta[i])
+                for j in tf.range(1, m-1):
+                    y_i = tf.multiply(y_i, tf.sin(x[j]))
             else:
-                y_i = tf.multiply(y_i, tf.cos(x[i]) + theta[i])
+                for j in tf.range(1, i+1):
+                    y_i = tf.multiply(y_i, tf.sin(x[j]))
+                y_i = tf.multiply(y_i, tf.cos(x[i]))
             y = y.write(i, y_i)
         return y.stack()
 

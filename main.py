@@ -38,9 +38,9 @@ params = {'cubical' : None,
 
 PD = PDiagram(train_images, params, images_id= 'mnist_train', man_dim=9)
 pds = PD.get_pds()
-vpds = PD.get_vectorized_pds()
+#vpds = PD.get_vectorized_pds()
 
 PD = PDiagram(test_images, params, images_id= 'mnist_test', man_dim=9)
 pds = PD.get_pds()
-vpds = PD.get_vectorized_pds()
+#vpds = PD.get_vectorized_pds()
 
