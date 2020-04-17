@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/dionysus-examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/hyperbolic_nn" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.8.2 (sftp://panos@deep.usc.edu:2222/media/hdd/panos/anaconda3/envs/tfgpu/bin/python)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (tfgpu)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
