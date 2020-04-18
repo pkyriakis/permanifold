@@ -50,7 +50,6 @@ class PDiagram():
             else:
                 return
 
-
     def __chunks(self, lst, n):
         '''
             Yield successive n-sized chunks from lst.
@@ -125,7 +124,6 @@ class PDiagram():
                 # Store it in dict
                 self.dgms_dict[index] = dgm_image
                 self.done.value += 1
-
 
     def __appr_integral(self, fun, x_low, x_up, y_low, y_up, K=5):
         '''
