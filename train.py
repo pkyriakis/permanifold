@@ -1,6 +1,6 @@
 import datetime
 import os, math
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import persistence_diagram
 import tensorflow as tf
@@ -98,13 +98,13 @@ x_train = pad_diagrams(dgms_train)
 x_test = pad_diagrams(dgms_test)
 y_train = train_labels
 y_test = test_labels
-x_train = np.split(x_train, indices_or_sections= 28, axis=1)
-x_test = np.split(x_test, indices_or_sections= 28, axis=1)
-x_train = [np.squeeze(_) for _ in x_train]
-x_test = [np.squeeze(_) for _ in x_test]
+# x_train = np.split(x_train, indices_or_sections= 28, axis=1)
+# x_test = np.split(x_test, indices_or_sections= 28, axis=1)
+# x_train = [np.squeeze(_) for _ in x_train]
+# x_test = [np.squeeze(_) for _ in x_test]
 
 # Set up model
 in_shape = [num_of_filtration, max_num_of_pnts, 3]
 per_model = layers.PManifoldModel(input_shape=in_shape, num_of_hom=num_of_hom, K=K)
 
-per_model.train(x_train, y_train, x_test, y_test)
+per_model.train(x_train,y_train,x_test,y_test)
