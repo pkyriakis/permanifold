@@ -1,3 +1,6 @@
+import os
+from PIL import Image
+
 import tensorflow as tf
 import math
 
@@ -126,8 +129,12 @@ def get_mnist_data(binirize = False):
         test_images[test_images < .5] = 0.
     return train_images, train_labels, test_images, test_labels
 
+def get_mpeg_data(dir = 'datasets/mpeg7'):
 
-### self.model helper functions
+    for filename in os.listdir(os.path.join(os.cwd(), dir)):
+        im = Image.open(filename)
+        print
+
 
 
 
