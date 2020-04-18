@@ -34,12 +34,6 @@ class PManifoldLayer(tf.keras.layers.Layer):
                                                                  self.K, self.man_dim),
                                                           dtype=tf.float32),
                                  trainable=True)
-        self.w = tf.Variable(name='theta',
-                             initial_value=theta_init(shape=(self.max_num_of_points,
-                                                             self.num_of_hom),
-                                                      dtype=tf.float32),
-                             trainable=True)
-
         super(PManifoldLayer, self).build(input_shape)
 
     def compute_output_shape(self, input_shape):
@@ -73,7 +67,7 @@ class PManifoldLayer(tf.keras.layers.Layer):
         z = r * tf.cos(theta)
         return tf.stack((x, y, z), axis=-1)
 
-    def __process_dgm(self, dgm, theta):
+    def __process_dgm(self, dgm, ind):
         '''
             Compute the representation of a diagram
         '''
@@ -81,20 +75,19 @@ class PManifoldLayer(tf.keras.layers.Layer):
         tilled_dgm = tf.tile(dgm, [1, self.K, 1])
         tilled_dgm = tf.pad(tilled_dgm, [[0, 0], [0, 0], [0, 1]])
 
-        tilled_theta = tf.tile(theta, multiples=[1, self.max_num_of_points])
+        tilled_theta = tf.tile(self.theta[ind,:,:], multiples=[1, self.max_num_of_points])
         tilled_theta = tf.reshape(tilled_theta, shape=[-1, self.man_dim])
-        tf.print(tf.shape(dgm))
         x = self.__cartesian_to_spherical_coordinates(tilled_dgm)
         x = tf.add(tilled_dgm, tilled_theta)
         tangent_x = self.Poincare.tf_log_map_x(self.x_o, x, 1.)
-        reshaped_tangent_x = tf.reshape(x,
+        reshaped_tangent_x = tf.reshape(tangent_x,
                                         shape=[-1, self.max_num_of_points,
                                                self.K, self.man_dim])
         sums = tf.reduce_sum(reshaped_tangent_x, axis=1)
         x_dgm = self.Poincare.tf_exp_map_x(self.x_o, sums, 1.)
         y_dgm = self.__spherical_to_cartesian_coordinates(x_dgm)
 
-        return tf.reshape(sums, shape=[-1, self.K*self.man_dim])
+        return tf.reshape(y_dgm, shape=[-1, self.K*self.man_dim])
 
     def call(self, inputs):
         '''
@@ -106,10 +99,8 @@ class PManifoldLayer(tf.keras.layers.Layer):
         dgm_0 = tf.squeeze(dgms[:, 0, :, :])  # first homology class
         dgm_1 = tf.squeeze(dgms[:, 1, :, :])  # second one
 
-        out_0 = self.__process_dgm(dgm_0,
-                                   tf.squeeze(self.theta[0,:,:]))
-        out_1 = self.__process_dgm(dgm_1,
-                                   tf.squeeze(self.theta[1,:,:]))
+        out_0 = self.__process_dgm(dgm_0, 0)
+        out_1 = self.__process_dgm(dgm_1, 1)
 
         out = tf.concat([out_0,out_1], axis=1)
 
@@ -158,7 +149,6 @@ class PManifoldModel(tf.keras.models.Model):
                            # List of metrics to monitor
                            metrics=['sparse_categorical_accuracy']
                            )
-        print(self.model.summary())
 
     def train(self, x_train, y_train, x_test, y_test):
 
@@ -178,7 +168,7 @@ class PManifoldModel(tf.keras.models.Model):
         train_dataset = train_dataset.shuffle(buffer_size=1024).batch(batch_size)
 
         # Instantiate an optimizer.
-        optimizer = tf.keras.optimizers.SGD(learning_rate=1e-3)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
         # Instantiate a loss function.
         loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
@@ -214,6 +204,6 @@ class PManifoldModel(tf.keras.models.Model):
                 optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
 
                 # Log every 200 batches.
-                if step % 200 == 0:
+                if step % 50 == 0:
                     tf.print('Training loss (for one batch) at step %s: %s' % (step, float(loss_value)))
                     tf.print('Seen so far: %s samples' % ((step + 1) * 64))
