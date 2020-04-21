@@ -10,7 +10,7 @@ def build_model(input_shape, K, units=None):
         K is the number of projection bases
     '''
     if units is None:
-        units = [128, 64]
+        units = [256, 128, 10]
 
     # Get input shapes
     num_of_fil = input_shape[0]
@@ -48,6 +48,6 @@ def build_model(input_shape, K, units=None):
     dropout = tf.keras.layers.Dropout(0.2)(dense2)
 
     # Out
-    out_layer = tf.keras.layers.Dense(units=10)(dropout)
+    out_layer = tf.keras.layers.Dense(units=units[2])(dropout)
 
     return tf.keras.Model(inputs=[inputs], outputs=out_layer)

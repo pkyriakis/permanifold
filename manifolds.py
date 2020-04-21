@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+import math
 class Poincare:
     '''
         Defines several helper functions needed by the Poincare model
@@ -52,24 +52,22 @@ class Poincare:
         val = (((2. / tf.sqrt(c)) / lam) * self.tf_atanh(tf.sqrt(c) * norm_diff) / norm_diff) * diff
         return val
 
-    def tf_parametrization(self, y, theta, m):
+    def tf_parametrization(self, y, m):
         '''
             Transforms the Euclidean point y onto the manifold given params theta
         '''
-        if tf.norm(y) == 0:
-            return tf.zeros(shape=(m,))
         x = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
         for i in tf.range(m, dtype=tf.int32):
             if i == 0:
-                x_i = tf.multiply(theta[0], tf.norm(y))
+                x_i = tf.norm(y)
             elif i == m - 1:
                 den = tf.norm(y[i - 1:])
-                x_i = theta[m-1] + tf.acos(y[i - 1] / den)
+                x_i = tf.acos(y[i - 1] / den)
                 if y[m - 1] < 0:
                     x_i = 2*math.pi - x_i
             else:
-                den = tf.norm(y[i - 1:])
-                x_i = tf.acos(y[i-1]/den) + theta[i]
+                den = tf.norm(y[i - 1:]) + self.EPS
+                x_i = tf.acos(y[i-1]/den)
             x = x.write(i, x_i)
         return x.stack()
 
@@ -95,7 +93,6 @@ class Poincare:
     def cartesian_to_spherical_coordinates(self, point_cartesian):
         '''
             Transform point to 3d spherical cords
-            TODO handle zero norm
         '''
         #tf.print(point_cartesian.shape)
         point = tf.convert_to_tensor(value=point_cartesian)

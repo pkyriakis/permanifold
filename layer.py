@@ -41,8 +41,7 @@ class PManifold(tf.keras.layers.Layer):
         '''
         return [-1, self.num_of_hom*self.K*self.man_dim]
 
-
-    def __process_dgm(self, dgm, ind):
+    def process_dgm(self, dgm, ind):
         '''
             Compute the representation of a diagram
         '''
@@ -56,7 +55,7 @@ class PManifold(tf.keras.layers.Layer):
 
         # Transform to manifold
         x = self.manifold.cartesian_to_spherical_coordinates(tilled_dgm)
-
+        #x = self.manifold.tf_parametrization(tilled_dgm, self.man_dim)
         # Add lernable vars
         x = tf.add(x, tilled_theta)
 
@@ -73,8 +72,9 @@ class PManifold(tf.keras.layers.Layer):
 
         # Transform to eucledian
         y_dgm = self.manifold.spherical_to_cartesian_coordinates(x_dgm)
+        #y_dgm = self.manifold.tf_chart(x_dgm, self.man_dim)
 
-        return tf.reshape(y_dgm, shape=[-1, self.K*self.man_dim])
+        return tf.reshape(y_dgm, shape=[-1, self.K, self.man_dim])
 
     def call(self, inputs):
         '''
@@ -88,8 +88,10 @@ class PManifold(tf.keras.layers.Layer):
         dgm_1 = tf.squeeze(dgms[:, 1, :, :])  # second one
 
         # Get and concat outputs
-        out_0 = self.__process_dgm(dgm_0, 0)
-        out_1 = self.__process_dgm(dgm_1, 1)
+        out_0 = self.process_dgm(dgm_0, 0)
+        out_1 = self.process_dgm(dgm_1, 1)
+        out_0 = tf.expand_dims(out_0, axis=1)
+        out_1 = tf.expand_dims(out_1, axis=1)
         out = tf.concat([out_0,out_1], axis=1)
 
         return out
