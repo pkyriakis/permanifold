@@ -80,7 +80,7 @@ class PManifold(tf.keras.layers.Layer):
         '''
             Call method of Keras Layers
         '''
-
+        return inputs
         dgms = inputs
         # Get the diagrams for the two homology classes
         # TODO generalize to m classes

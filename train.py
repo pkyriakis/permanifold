@@ -10,11 +10,11 @@ import utils
 
 # Model hyperparms
 man_dim = 3  # Dimension of the manifold
-K = 5  # number of projection bases
+K = 100  # number of projection bases
 
 ## Set the params of the filtrations
 # Height filtration
-num_of_vects = 10
+num_of_vects = 14
 angles = np.linspace(0, math.pi / 2, num_of_vects)
 dirs = [[round(math.cos(theta), 2), round(math.sin(theta), 2)] for theta in angles]
 dirs = np.array(dirs)
@@ -22,6 +22,9 @@ dirs = np.array(dirs)
 # Radial filtration
 center = np.array([[10, 10], [10, 20], [15,15], [20, 10], [20, 20]])
 radius = np.array([5, 8, 10, 12, 15])
+center = np.array([])
+radius = np.array([])
+
 
 # Erosion filtration
 n_iter_er = np.array([1, 2, 3, 50])
@@ -50,10 +53,6 @@ params = {'cubical': None,
 
 img_id = 'cifar10'
 train_images, train_labels, test_images, test_labels = utils.get_cifar()
-train_images=train_images[:3000]
-test_images=test_images[:100]
-train_labels=train_labels[:3000]
-test_labels=test_labels[:100]
 
 N_train = train_images.shape[0]
 N_test = test_images.shape[0]
@@ -65,6 +64,8 @@ x_train = data[:N_train]
 x_test = data[N_train:]
 y_train = train_labels
 y_test = test_labels
+
+
 
 # Set up model
 in_shape = [num_of_filtrations, num_of_hom, max_num_of_pnts, man_dim]

@@ -31,14 +31,17 @@ def build_model(input_shape, K, units=None):
 
     # Flatten
     in_layer_2 = tf.concat(in_layer, axis=1)
-    flat = tf.keras.layers.Flatten()(in_layer_2)
+
+    conv1 = tf.keras.layers.Conv2D(filters=32, kernel_size=3)(in_layer_2)
+    conv2 = tf.keras.layers.Conv2D(filters=64, kernel_size=3)(conv1)
+    flat = tf.keras.layers.Flatten()(conv2)
 
     # First dense
     dense1 = tf.keras.layers.Dense(units[0],
                                         activation='relu')(flat)
 
     # Batch norm
-    batch_norm = tf.keras.layers.BatchNormalization()(dense1)
+    batch_norm = tf.keras.layers.BatchNormalization()(flat)
 
     # Second dense
     dense2 = tf.keras.layers.Dense(units[1],

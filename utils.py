@@ -3,6 +3,7 @@ from PIL import Image
 
 import tensorflow as tf
 import numpy as np
+import networkx as nx
 
 def get_mnist_data(binirize = False):
     '''
@@ -80,6 +81,21 @@ def get_cifar():
 
     return x_train, train_labels, x_test, test_labels
 
+def get_graphs(directory):
+    '''
+        Reads the graphs and labels in the given director
+    '''
+    graphs = []
+    for file in os.listdir(directory):
+        if '.gml' in file:
+            graph = nx.readwrite.gml.read_gml(os.path.join(directory, file), label=None)
+            graphs.append(graph)
+        else:
+            with open(os.path.join(directory, file)) as f:
+                labels = f.readlines()
+                labels = [label.strip() for label in labels]
+
+    return graphs, labels
 
 
 
