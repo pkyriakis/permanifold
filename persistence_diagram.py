@@ -22,35 +22,17 @@ class PDiagram():
     '''
         Main class that generates PDs
     '''
-    def __init__(self, images, fil_parms, images_id='mnist', man_dim=9, embedding = 'padding'):
+    def __init__(self, images, fil_parms, images_id='mnist'):
         self.images = images
-        self.save_dir = 'data/diagrams/' + images_id + "/"
+        self.save_dir = 'diagrams/' + images_id + "/"
         self.fil_params = fil_parms
-        self.man_dim = man_dim
-        self.embedding = embedding
 
         self.num_images = images.shape[0]
         self.image_size = images.shape[1]
         self.img_inds = list(range(self.num_images))
 
-        self.manager = multiprocessing.Manager()
-        self.dgms_dict = self.manager.dict()
-        self.vdgms_dict = self.manager.dict()
-        self.edgms_dict = self.manager.dict()
-        self.done = multiprocessing.Value("i", 0)
-        self.max_num_of_points = multiprocessing.Value("i", 0)
-        self.num_of_hom = multiprocessing.Value("i", 0)
-
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
-
-    def __show_progress(self, total):
-        '''
-            Shows a progress bar
-        '''
-        while self.done.value < total:
-            self.progress_bar.update(self.done.value)
-            sleep(1)
 
     def __chunks(self, lst, n):
         '''
@@ -68,64 +50,6 @@ class PDiagram():
         death = point[1]
         return [birth, death - birth]
 
-    def __compute_pds_chunk(self, chunk):
-        '''
-            Computes the PDs for the given chunk of images using the params set in the self.fil_params
-        :return:
-        '''
-        for index in chunk:
-            image = np.expand_dims(self.images[index], axis=0)
-            bin = Binarizer()
-            bin_image = bin.fit_transform(image)
-            dgm_image = dict()
-            for filtration in self.fil_params.keys():
-                params = self.fil_params[filtration]
-                cubical = CubicalPersistence(homology_dimensions=(0, 1))
-                if filtration == 'cubical':
-                    cub_dict = dict()
-                    cub_dict[0] = np.squeeze(cubical.fit_transform(image))
-                    dgm_image[filtration] = cub_dict
-                if filtration == 'height':
-                    height_dict = dict()
-                    for i in range(params.shape[0]):
-                        heigtht_fil = HeightFiltration(direction=params[i])
-                        filtered = heigtht_fil.fit_transform(bin_image)
-                        filtered = filtered / np.max(filtered)
-                        height_dict[i] = np.squeeze(cubical.fit_transform(filtered))
-                    dgm_image[filtration] = height_dict
-                if filtration == 'radial':
-                    radial_dict = dict()
-                    center = params['center']
-                    radius = params['radius']
-                    cnt = 0
-                    for i in range(center.shape[0]):
-                        for j in range(radius.shape[0]):
-                            radial_fil = RadialFiltration(center=center[i], radius=radius[j])
-                            filtered = radial_fil.fit_transform(bin_image)
-                            filtered = filtered / np.max(filtered)
-                            radial_dict[cnt] = np.squeeze(cubical.fit_transform(filtered))
-                            cnt += 1
-                    dgm_image[filtration] = radial_dict
-                if filtration == 'dilation':
-                    dil_dict = dict()
-                    for i in range(len(params)):
-                        dial_fil = DilationFiltration(n_iterations=int(params[i]))
-                        filtered = dial_fil.fit_transform(bin_image)
-                        filtered = filtered / np.max(filtered)
-                        dil_dict[i] = np.squeeze(cubical.fit_transform(filtered))
-                    dgm_image[filtration] = dil_dict
-                if filtration == 'erosion':
-                    er_dict = dict()
-                    for i in range(len(params)):
-                        er_fil = ErosionFiltration(n_iterations=int(params[i]))
-                        filtered = er_fil.fit_transform(bin_image)
-                        filtered = filtered / np.max(filtered)
-                        er_dict[i] = np.squeeze(cubical.fit_transform(filtered))
-                    dgm_image[filtration] = er_dict
-
-                # Store it in dict
-                self.dgms_dict[index] = dgm_image
-                self.done.value += 1
 
     def __appr_integral(self, fun, x_low, x_up, y_low, y_up, K=5):
         '''
@@ -244,7 +168,6 @@ class PDiagram():
             self.edgms_dict[index] = edgm_image
             self.done.value += 1
 
-
     def __run_parallel(self, target, indices):
         '''
             Parellel run of target; the given list of indices creates the chunks to allocate to each cpu
@@ -268,17 +191,65 @@ class PDiagram():
         for job in jobs:
             job.join()
 
-
     def __get_pds(self):
         '''
-            Calculates the persistence diagrams of all images
-        :return: a dict, keyed by the index of image
+            Calculates the persistence diagrams for all images
+        :return: a list
         '''
+        bin = Binarizer(n_jobs=-1)
+        bin_image = bin.fit_transform(self.images)
+        pds = [] # List containing PDs for each filtration
+        for filtration in self.fil_params.keys():
+            params = self.fil_params[filtration]
+            cubical = CubicalPersistence(homology_dimensions=(0, 1), n_jobs=-1)
+            if filtration == 'cubical':
+                pds.append(cubical.fit_transform(self.images))
+            if filtration == 'height':
+                for i in range(params.shape[0]):
+                    heigtht_fil = HeightFiltration(direction=params[i])
+                    filtered = heigtht_fil.fit_transform(bin_image)
+                    filtered = filtered / np.max(filtered)
+                    pds.append(cubical.fit_transform(filtered))
+            if filtration == 'radial':
+                center = params['center']
+                radius = params['radius']
+                cnt = 0
+                for i in range(center.shape[0]):
+                    for j in range(radius.shape[0]):
+                        radial_fil = RadialFiltration(center=center[i], radius=radius[j])
+                        filtered = radial_fil.fit_transform(bin_image)
+                        filtered = filtered / np.max(filtered)
+                        pds.append(cubical.fit_transform(filtered))
+                        cnt += 1
+            if filtration == 'dilation':
+                for i in range(len(params)):
+                    dial_fil = DilationFiltration(n_iterations=int(params[i]))
+                    filtered = dial_fil.fit_transform(bin_image)
+                    filtered = filtered / np.max(filtered)
+                    pds.append(cubical.fit_transform(filtered))
+            if filtration == 'erosion':
+                for i in range(len(params)):
+                    er_fil = ErosionFiltration(n_iterations=int(params[i]))
+                    filtered = er_fil.fit_transform(bin_image)
+                    filtered = filtered / np.max(filtered)
+                    pds.append(cubical.fit_transform(filtered))
+        return pds
 
-        print('Computing persistence diagrams...')
-        self.__run_parallel(self.__compute_pds_chunk, self.img_inds)
-
-        return self.dgms_dict
+    def __reformat_pad_diagrams(self, chunk):
+        '''
+            Converts the self.edgms dict to numpy array and
+            pads the diagrams to make them of equal size
+        '''
+        data = np.ctypeslib.as_array(self.shared_data_array)
+        for ind in chunk:
+            cnt = 0
+            for filtration in self.edgms_dict[ind].keys():
+                for par_ind in self.edgms_dict[ind][filtration].keys():
+                    dgm = self.edgms_dict[ind][filtration][par_ind]
+                    for p_ind in range(dgm.shape[0]):
+                        hom = int(dgm[p_ind, -1])
+                        data[ind, cnt, hom, p_ind, :] = dgm[p_ind, :self.man_dim]
+                    cnt += 1
 
     def get_vectorized_pds(self):
         '''
@@ -302,27 +273,12 @@ class PDiagram():
 
         return self.vdgms_dict
 
-    def __reformat_pad_diagrams(self, chunk):
-        '''
-            Converts the self.edgms dict to numpy array and
-            pads the diagrams to make them of equal size
-        '''
-        data = np.ctypeslib.as_array(self.shared_data_array)
-        for ind in chunk:
-            cnt = 0
-            for filtration in self.edgms_dict[ind].keys():
-                for par_ind in self.edgms_dict[ind][filtration].keys():
-                    dgm = self.edgms_dict[ind][filtration][par_ind]
-                    for p_ind in range(dgm.shape[0]):
-                        hom = int(dgm[p_ind, -1])
-                        data[ind, cnt, hom, p_ind, :] = dgm[p_ind, :self.man_dim]
-                    cnt += 1
-
-    def get_embedded_pds(self):
+    def get_pds(self):
         '''
             Get embedded PDs
         '''
         # Check if already there
+        equal = False
         for filename in os.listdir(self.save_dir):
             if ".pkl" in filename:
                 with open(os.path.join(self.save_dir,filename), 'rb') as f:
@@ -347,33 +303,23 @@ class PDiagram():
                                 if not np.array_equal(vin[k],vself[k]):
                                     equal = False
                     if equal:
-                        return data, data.shape[1], data.shape[2], data.shape[3]
+                        pds = data
 
-        self.__get_pds()
-        assert set(self.dgms_dict.keys()) == set(self.img_inds)
+        if not equal:
+            pds = self.__get_pds()
 
         # Get number of filtrations
-        self.num_of_filtrations = 0
-        for filtration in self.dgms_dict[0].keys():
-            for _ in self.dgms_dict[0][filtration]:
-                self.num_of_filtrations += 1
-
-        print('Embedding persistence diagrams...')
-        self.__run_parallel(self.__embed_pds_chunk, self.img_inds)
-
-        print('Padding persistence diagrams...')
-        self.data = np.ctypeslib.as_ctypes(np.zeros(shape=[self.num_images, self.num_of_filtrations,
-                         self.num_of_hom.value, self.max_num_of_points.value, self.man_dim], dtype=np.float32))
-        self.shared_data_array = multiprocessing.sharedctypes.RawArray(self.data._type_, self.data)
-        self.__run_parallel(self.__reformat_pad_diagrams, self.img_inds)
-
-        data = np.ctypeslib.as_array(self.shared_data_array)
+        num_of_filtrations = len(pds)
+        max_num_of_points = []
+        for _ in range(num_of_filtrations):
+            max_num_of_points.append(pds[_].shape[1])
+        sam = pds[0]
+        num_of_hom = len(set(sam[0,:,2]))
 
         # # Save to file
-        fname = os.path.join(self.save_dir, 'edgms.pkl-' + str(random.randint(0,1000)))
+        fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0,1000)))
         out_file = open(fname, 'wb')
-        pickle.dump([self.fil_params, self.man_dim, data], out_file, protocol=-1)
+        pickle.dump([self.fil_params, pds], out_file, protocol=-1)
         out_file.close()
 
-        return np.ctypeslib.as_array(self.shared_data_array), self.num_of_filtrations, \
-               self.num_of_hom.value, self.max_num_of_points.value
+        return pds, num_of_filtrations, num_of_hom, max_num_of_points

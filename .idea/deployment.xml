@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="Deep">
+  <component name="PublishConfigData" autoUpload="Always" serverName="TF Instance 2">
     <serverData>
       <paths name="Deep">
         <serverdata>
@@ -10,6 +10,13 @@
         </serverdata>
       </paths>
       <paths name="TF Instance">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/Projects/PerManifold" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="TF Instance 2">
         <serverdata>
           <mappings>
             <mapping deploy="/Projects/PerManifold" local="$PROJECT_DIR$" web="/" />

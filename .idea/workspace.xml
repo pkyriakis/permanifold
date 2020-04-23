@@ -20,8 +20,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/PerManifold.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PerManifold.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/layers.py" beforeDir="false" afterPath="$PROJECT_DIR$/layers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/layer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manifolds.py" beforeDir="false" afterPath="$PROJECT_DIR$/manifolds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/persistence_diagram.py" beforeDir="false" afterPath="$PROJECT_DIR$/persistence_diagram.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,12 +149,12 @@
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
+          <option name="imageTag" value="" />
           <option name="buildCliOptions" value="" />
           <option name="buildOnly" value="true" />
           <option name="command" value="" />
           <option name="containerName" value="" />
           <option name="entrypoint" value="" />
-          <option name="imageTag" value="" />
           <option name="commandLineOptions" value="" />
           <option name="sourceFilePath" value="Dockerfile" />
         </settings>
@@ -156,7 +164,7 @@
     <list>
       <item itemvalue="Docker.Dockerfile" />
       <item itemvalue="Python.main" />
-      <item itemvalue="Python Remote Debug.Unnamed" />
+      <item itemvalue="Python Debug Server.Unnamed" />
     </list>
     <recent_temporary>
       <list>
@@ -202,6 +210,7 @@
       <workItem from="1586815753011" duration="8177000" />
       <workItem from="1586830519146" duration="17384000" />
       <workItem from="1587149106021" duration="23898000" />
+      <workItem from="1587613432839" duration="3127000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -284,20 +293,19 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <ignored-roots>
@@ -312,10 +320,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="fixing layers.py, using tf tile" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="362" y="75" key="#Deployment" timestamp="1587150214834">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="956" y="237" width="1527" height="1009" key="#Deployment" timestamp="1587616514739">
+      <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="362" y="75" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1587150214834" />
+    <state x="956" y="237" width="1527" height="1009" key="#Deployment/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587616514739" />
     <state x="2226" y="509" width="1200" height="1009" key="#Docker" timestamp="1586388673475">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -414,13 +423,13 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="483" y="131" key="MultipleFileMergeDialog/0.0.1536.824@0.0.1536.824" timestamp="1587149148271" />
-    <state x="214" y="32" width="912" height="706" key="SettingsEditor" timestamp="1587149167873">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="1234" y="572" width="912" height="706" key="SettingsEditor" timestamp="1587614795143">
+      <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="-1326" y="260" width="916" height="708" key="SettingsEditor/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1586635065757" />
     <state x="214" y="32" width="912" height="706" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1587149167873" />
     <state x="5028" y="539" width="1531" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1586044819714" />
-    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586513977333" />
+    <state x="1234" y="572" width="1495" height="1087" key="SettingsEditor/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587614795143" />
     <state x="521" y="260" width="1200" height="785" key="Vcs.Push.Dialog.v2" timestamp="1587172571264">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -446,10 +455,11 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="413" y="119" width="872" height="531" key="com.jetbrains.plugins.remotesdk.ui.RemoteMappingsConfiguration/0.0.1536.824@0.0.1536.824" timestamp="1586910105777" />
-    <state x="508" y="122" width="443" height="525" key="ftp.server.browser" timestamp="1586912263862">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="1315" y="357" width="443" height="525" key="ftp.server.browser" timestamp="1587616513469">
+      <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="508" y="122" width="443" height="525" key="ftp.server.browser/0.0.1536.824@0.0.1536.824" timestamp="1586912263862" />
+    <state x="1315" y="357" key="ftp.server.browser/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587616513469" />
     <state x="551" y="129" key="git4idea.branch.GitSmartOperationDialog" timestamp="1586815782930">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -458,6 +468,14 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1452" y="801" width="993" height="606" key="git4idea.merge.GitPullDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586206320861" />
+    <state x="1566" y="960" width="765" height="288" key="git4idea.ui.GitStashDialog" timestamp="1587613454515">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1566" y="960" width="765" height="288" key="git4idea.ui.GitStashDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587613454515" />
+    <state x="1490" y="884" width="1375" height="441" key="git4idea.ui.GitUnstashDialog" timestamp="1587613468988">
+      <screen x="67" y="44" width="3773" height="2116" />
+    </state>
+    <state x="1490" y="884" width="1375" height="441" key="git4idea.ui.GitUnstashDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587613468988" />
     <state x="559" y="187" width="672" height="573" key="search.everywhere.popup" timestamp="1587175406447">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

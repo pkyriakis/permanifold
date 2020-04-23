@@ -56,39 +56,39 @@ class Poincare:
         '''
             Transforms the Euclidean point y onto the manifold given params theta
         '''
-        x = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
-        for i in tf.range(m, dtype=tf.int32):
-            if i == 0:
-                x_i = tf.norm(y)
-            elif i == m - 1:
-                den = tf.norm(y[i - 1:])
-                x_i = tf.acos(y[i - 1] / den)
-                if y[m - 1] < 0:
-                    x_i = 2*math.pi - x_i
-            else:
-                den = tf.norm(y[i - 1:]) + self.EPS
-                x_i = tf.acos(y[i-1]/den)
-            x = x.write(i, x_i)
-        return x.stack()
+        sliced_y = tf.split(y, num_or_size_splits=m, axis=-1)
+        x = tf.norm(y, axis=-1, keepdims=True)
+        for i in tf.range(1, m, dtype=tf.int32):
+            tf.autograph.experimental.set_loop_options(shape_invariants=
+                                                       [(x, tf.TensorShape([None,None,None]))])
+            ind = tf.range(i - 1, m)
+            gathered = tf.gather(y, indices=ind, axis=-1)
+            den = tf.norm(gathered, axis=-1, keepdims=True) + self.EPS
+            x_i = tf.acos(tf.gather(sliced_y,indices=i-1) / den)
+            if i == m - 1:
+                x_i = tf.where(x_i > 0, x_i, 2 * math.pi - x_i)
+            x = tf.concat([x,x_i], axis=-1)
+        return tf.where(tf.math.is_nan(x), 0., x)
 
     def tf_chart(self, x, m):
         '''
             Transforms the manifold point x to the Euclidean space
         '''
-        y = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True)
-        y_0 = tf.multiply(x[0], tf.cos(x[1]))
-        y = y.write(0,y_0)
+        sliced_x = tf.split(x, num_or_size_splits=m, axis=-1)
+        y = tf.multiply(sliced_x[0], tf.cos(sliced_x[1]))
         for i in tf.range(1, m, dtype=tf.int32):
-            y_i = x[0]
-            if i == m-1:
-                for j in tf.range(1, m-1):
-                    y_i = tf.multiply(y_i, tf.sin(x[j]))
+            tf.autograph.experimental.set_loop_options(shape_invariants=
+                                                       [(y, tf.TensorShape([None, None, None]))])
+            y_i = tf.gather(sliced_x, indices=0)
+            if i == m - 1:
+                for j in tf.range(1, m):
+                    y_i = tf.multiply(y_i, tf.sin(tf.gather(sliced_x, indices=j)))
             else:
-                for j in tf.range(1, i+1):
-                    y_i = tf.multiply(y_i, tf.sin(x[j]))
-                y_i = tf.multiply(y_i, tf.cos(x[i]))
-            y = y.write(i, y_i)
-        return y.stack()
+                for j in tf.range(1, i + 1):
+                    y_i = tf.multiply(y_i, tf.sin(tf.gather(sliced_x, indices=j)))
+                y_i = tf.multiply(y_i, tf.cos(tf.gather(sliced_x, indices=i+1)))
+            y = tf.concat([y,y_i], axis=-1)
+        return y
 
     def cartesian_to_spherical_coordinates(self, point_cartesian):
         '''

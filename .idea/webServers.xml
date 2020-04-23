@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="87a99423-978b-4865-ad58-6e3d77886d7e" name="TF Instance 2">
+        <fileTransfer rootFolder="/home/weaver" accessType="SFTP" host="35.203.160.225" port="22" sshConfigId="8474658b-9d11-4c6e-b56e-6cd86fb8ce18" sshConfig="weaver@35.203.160.225:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
