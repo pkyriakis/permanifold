@@ -21,8 +21,8 @@ def build_model(input_shape, K, units=None):
     # Setup an input for each filtration
     in_layer = []
     inputs = []
-    layer_input_shape = [num_of_hom, max_num_of_points, man_dim]
     for _ in range(num_of_fil):
+        layer_input_shape = [num_of_hom, max_num_of_points[_], man_dim]
         pm_layer = PManifold(layer_input_shape, K)
         cur_input = tf.keras.Input(shape=layer_input_shape)
         inputs.append(cur_input)

@@ -54,8 +54,7 @@ class PManifold(tf.keras.layers.Layer):
         tilled_theta = tf.reshape(tilled_theta, shape=[-1, self.man_dim])
 
         # Transform to manifold
-        x = self.manifold.cartesian_to_spherical_coordinates(tilled_dgm)
-        #x = self.manifold.tf_parametrization(tilled_dgm, self.man_dim)
+        x = self.manifold.tf_parametrization(tilled_dgm, self.man_dim)
         # Add lernable vars
         x = tf.add(x, tilled_theta)
 
@@ -71,16 +70,20 @@ class PManifold(tf.keras.layers.Layer):
         x_dgm = self.manifold.tf_exp_map_x(self.x_o, sums, 1.)
 
         # Transform to eucledian
-        y_dgm = self.manifold.spherical_to_cartesian_coordinates(x_dgm)
-        #y_dgm = self.manifold.tf_chart(x_dgm, self.man_dim)
-
+        y_dgm = self.manifold.tf_chart(x_dgm, self.man_dim)
         return tf.reshape(y_dgm, shape=[-1, self.K, self.man_dim])
+
+    def get_config(self):
+        config = super().get_config().copy()
+        config.update({
+            'projection_bases': self.K,
+            'num_of_hom': self.num_of_hom
+        })
 
     def call(self, inputs):
         '''
             Call method of Keras Layers
         '''
-        return inputs
         dgms = inputs
         # Get the diagrams for the two homology classes
         # TODO generalize to m classes
