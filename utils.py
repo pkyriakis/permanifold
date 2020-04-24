@@ -5,12 +5,17 @@ import tensorflow as tf
 import numpy as np
 import networkx as nx
 
-def get_mnist_data(binirize = False):
+from sklearn.preprocessing import LabelEncoder
+
+def get_mnist_data(binirize = False, fashion = False):
     '''
-        Uses the keras backend to downlaad and binirize the MNIST images
+        Uses the keras backend to download and binirize the MNIST images
     :return: train_images, train_labels, test_images, test_labels
     '''
-    (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()
+    if fashion:
+        (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.fashion_mnist.load_data()
+    else:
+        (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()
     train_images = train_images.reshape(train_images.shape[0], 28, 28).astype('float32')
     test_images = test_images.reshape(test_images.shape[0], 28, 28).astype('float32')
 
@@ -83,18 +88,19 @@ def get_cifar():
 
 def get_graphs(directory):
     '''
-        Reads the graphs and labels in the given director
+        Reads the graphs and labels in the given directory
     '''
+    directory = os.path.join('datasets', directory)
     graphs = []
     for file in os.listdir(directory):
         if '.gml' in file:
             graph = nx.readwrite.gml.read_gml(os.path.join(directory, file), label=None)
             graphs.append(graph)
-        else:
+        elif 'Labels.txt' in file:
             with open(os.path.join(directory, file)) as f:
                 labels = f.readlines()
                 labels = [label.strip() for label in labels]
-
+    labels = LabelEncoder().fit_transform(labels)
     return graphs, labels
 
 

@@ -1,5 +1,6 @@
 import tensorflow as tf
 import math
+
 class Poincare:
     '''
         Defines several helper functions needed by the Poincare model
@@ -90,26 +91,9 @@ class Poincare:
             y = tf.concat([y,y_i], axis=-1)
         return y
 
-    def cartesian_to_spherical_coordinates(self, point_cartesian):
-        '''
-            Transform point to 3d spherical cords
-        '''
-        #tf.print(point_cartesian.shape)
-        point = tf.convert_to_tensor(value=point_cartesian)
-        x, y, z = tf.split(point, num_or_size_splits=3, axis=-1)
-        radius = tf.norm(tensor=point, axis=-1, keepdims=True)
-        theta = tf.acos(z / (radius + self.EPS))
-        phi = tf.atan2(y, x)
-        return tf.concat((radius, theta, phi), axis=-1)
-
-    def spherical_to_cartesian_coordinates(self, point_spherical):
-        '''
-            Transform point to 3d spherical cords
-            TODO handle negative radius
-        '''
-        r, theta, phi = tf.unstack(point_spherical, axis=-1)
-        tmp = r * tf.sin(theta)
-        x = tmp * tf.cos(phi)
-        y = tmp * tf.sin(phi)
-        z = r * tf.cos(theta)
-        return tf.stack((x, y, z), axis=-1)
+class Lorenz:
+    '''
+            Defines several helper functions needed by the Lorenz model
+            such as exp and log maps and the coordinate chart and parameterization
+    '''
+    pass

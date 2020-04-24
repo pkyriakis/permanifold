@@ -1,6 +1,6 @@
 from layer import PManifold
 import tensorflow as tf
-def build_model(input_shape, K, units=None):
+def build_model(input_shape, man_dim, K, units=None):
     '''
         Sets up a keras model using the PManifold is first layer
         Architecture past PManifold is as follows:
@@ -16,15 +16,17 @@ def build_model(input_shape, K, units=None):
     num_of_fil = input_shape[0]
     num_of_hom = input_shape[1]
     max_num_of_points = input_shape[2]
-    man_dim = input_shape[3]
 
     # Setup an input for each filtration
     in_layer = []
     inputs = []
-    for _ in range(num_of_fil):
-        layer_input_shape = [num_of_hom, max_num_of_points[_], man_dim]
-        pm_layer = PManifold(layer_input_shape, K)
+    for i in range(num_of_fil):
+        layer_input_shape = [num_of_hom, max_num_of_points[i], 2]
         cur_input = tf.keras.Input(shape=layer_input_shape)
+
+        # Create Persistent Manifold Layers
+        pm_layer = PManifold(max_num_of_points=max_num_of_points[i], man_dim=man_dim,
+                             num_of_hom=num_of_hom, K=K)
         inputs.append(cur_input)
         in_layer.append(pm_layer(cur_input))
 
@@ -32,9 +34,7 @@ def build_model(input_shape, K, units=None):
     # Flatten
     in_layer_2 = tf.concat(in_layer, axis=1)
 
-    conv1 = tf.keras.layers.Conv2D(filters=32, kernel_size=3)(in_layer_2)
-    conv2 = tf.keras.layers.Conv2D(filters=64, kernel_size=3)(conv1)
-    flat = tf.keras.layers.Flatten()(conv2)
+    flat = tf.keras.layers.Flatten()(in_layer_2)
 
     # First dense
     dense1 = tf.keras.layers.Dense(units[0],
