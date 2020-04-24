@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/dionysus-examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/hyperbolic_nn" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.7 (tfgpu)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.7.6 (sftp://weaver@35.203.160.225:22/home/weaver/anaconda3/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

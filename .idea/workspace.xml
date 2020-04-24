@@ -20,14 +20,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/PerManifold.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PerManifold.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/layer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manifolds.py" beforeDir="false" afterPath="$PROJECT_DIR$/manifolds.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/persistence_diagram.py" beforeDir="false" afterPath="$PROJECT_DIR$/persistence_diagram.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,6 +207,7 @@
       <workItem from="1586830519146" duration="17384000" />
       <workItem from="1587149106021" duration="23898000" />
       <workItem from="1587613432839" duration="3127000" />
+      <workItem from="1587720249587" duration="622000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -351,11 +351,11 @@
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="1348" y="600" width="1200" height="1009" key="#Servers/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586174614737" />
-    <state x="1404" y="684" width="704" height="517" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587718700161">
+    <state x="1404" y="684" width="704" height="517" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587720349520">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="544" y="249" width="704" height="517" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1586909615499" />
-    <state x="1404" y="684" width="1728" height="833" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587718700161" />
+    <state x="1404" y="684" width="1728" height="833" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587720349520" />
     <state x="560" y="321" width="537" height="196" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1586927259882">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -389,26 +389,26 @@
     <state x="-936" y="476" key="FileChooserDialogImpl/0.0.1536.824/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1586635050727" />
     <state x="787" y="232" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1586916842820" />
     <state x="2000" y="1012" width="691" height="746" key="FileChooserDialogImpl/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587717454805" />
-    <state width="3703" height="487" key="GridCell.Tab.0.bottom" timestamp="1587719998124">
+    <state width="3703" height="487" key="GridCell.Tab.0.bottom" timestamp="1587720811036">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state width="1493" height="178" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586921729083" />
-    <state width="3703" height="487" key="GridCell.Tab.0.bottom/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587719998124" />
-    <state width="3703" height="487" key="GridCell.Tab.0.center" timestamp="1587719998124">
+    <state width="3703" height="487" key="GridCell.Tab.0.bottom/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587720811036" />
+    <state width="3703" height="487" key="GridCell.Tab.0.center" timestamp="1587720811036">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state width="1493" height="178" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1586921729083" />
-    <state width="3703" height="487" key="GridCell.Tab.0.center/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587719998124" />
-    <state width="3703" height="487" key="GridCell.Tab.0.left" timestamp="1587719998124">
+    <state width="3703" height="487" key="GridCell.Tab.0.center/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587720811036" />
+    <state width="3703" height="487" key="GridCell.Tab.0.left" timestamp="1587720811036">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state width="1493" height="178" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1586921729083" />
-    <state width="3703" height="487" key="GridCell.Tab.0.left/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587719998124" />
-    <state width="3703" height="487" key="GridCell.Tab.0.right" timestamp="1587719998124">
+    <state width="3703" height="487" key="GridCell.Tab.0.left/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587720811036" />
+    <state width="3703" height="487" key="GridCell.Tab.0.right" timestamp="1587720811036">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state width="1493" height="178" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1586921729083" />
-    <state width="3703" height="487" key="GridCell.Tab.0.right/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587719998124" />
+    <state width="3703" height="487" key="GridCell.Tab.0.right/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587720811036" />
     <state width="3703" height="733" key="GridCell.Tab.1.bottom" timestamp="1586418343798">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -489,6 +489,6 @@
     <state x="1440" y="523" width="1023" height="1470" key="search.everywhere.popup/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1586506362424" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PerManifold$main.coverage" NAME="main Coverage Results" MODIFIED="1587720053910" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PerManifold$main.coverage" NAME="main Coverage Results" MODIFIED="1587720789281" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
