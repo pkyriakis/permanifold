@@ -1,26 +1,26 @@
-import math
-
-from tqdm import tqdm
-
 import os
 import pickle
 import random
-
-from scipy.stats import multivariate_normal
+import math
+import multiprocessing
 from collections import defaultdict
-from time import sleep
 
 import numpy as np
-import multiprocessing
-from scipy.integrate import simps
+import networkx as nx
+import cechmate as cm
 
+from tqdm import tqdm
+from scipy.stats import multivariate_normal
+from scipy.integrate import simps
 from gtda.images import *
+from gtda.homology import VietorisRipsPersistence
+from gtda.graphs import GraphGeodesicDistance
 from gtda.homology import CubicalPersistence
 
 
-class PDiagram():
+class ImagePDiagram():
     '''
-        Main class that generates PDs
+        Main class that generates PDs for images
     '''
     def __init__(self, images, fil_parms, images_id='mnist'):
         self.images = images
@@ -191,48 +191,85 @@ class PDiagram():
         for job in jobs:
             job.join()
 
+    def __reshape_dgm(self, dgms):
+        '''
+            Splits diagrams accross homology classes
+        '''
+        N = dgms.shape[0]
+        pnts = dgms.shape[1]
+        out = np.zeros(shape=(N,2,pnts,2))
+        for ind in range(dgms.shape[0]):
+            cur0 = dgms[ind]
+            cur1 = dgms[ind]
+            cur0[cur0[:,2] == 1] = 0
+            cur1[cur1[:,2] == 0] = 0
+            out[ind,0,:,:] = cur0[:,:2]
+            out[ind,1,:,:] = cur1[:,:2]
+
+        return out
+
     def __get_pds(self):
         '''
             Calculates the persistence diagrams for all images
         :return: a list
         '''
-        bin = Binarizer(n_jobs=-1)
-        bin_image = bin.fit_transform(self.images)
+        binarizer = Binarizer(n_jobs=-1)
+        bin_image = binarizer.fit_transform(self.images)
         pds = [] # List containing PDs for each filtration
-        for filtration in self.fil_params.keys():
-            params = self.fil_params[filtration]
+        bar = tqdm(total=0)
+        for filtration, params in self.fil_params.items():
             cubical = CubicalPersistence(homology_dimensions=(0, 1), n_jobs=-1)
             if filtration == 'cubical':
-                pds.append(cubical.fit_transform(self.images))
+                bar.total = 1
+                bar.refresh()
+                dgms = cubical.fit_transform(self.images)
+                pds.append(self.__reshape_dgm(dgms))
+                bar.update(1)
             if filtration == 'height':
+                bar.total = params.shape[0]
+                bar.refresh()
                 for i in range(params.shape[0]):
                     heigtht_fil = HeightFiltration(direction=params[i])
                     filtered = heigtht_fil.fit_transform(bin_image)
                     filtered = filtered / np.max(filtered)
-                    pds.append(cubical.fit_transform(filtered))
+                    dgms = cubical.fit_transform(filtered)
+                    pds.append(self.__reshape_dgm(dgms))
+                    bar.update(1)
             if filtration == 'radial':
                 center = params['center']
                 radius = params['radius']
                 cnt = 0
+                bar.total =center.shape[0]*radius.shape[0]
+                bar.refresh()
                 for i in range(center.shape[0]):
                     for j in range(radius.shape[0]):
                         radial_fil = RadialFiltration(center=center[i], radius=radius[j])
                         filtered = radial_fil.fit_transform(bin_image)
                         filtered = filtered / np.max(filtered)
-                        pds.append(cubical.fit_transform(filtered))
+                        dgms = cubical.fit_transform(filtered)
+                        pds.append(self.__reshape_dgm(dgms))
                         cnt += 1
+                        bar.update(1)
             if filtration == 'dilation':
+                bar.total=len(params)
+                bar.refresh()
                 for i in range(len(params)):
                     dial_fil = DilationFiltration(n_iterations=int(params[i]))
                     filtered = dial_fil.fit_transform(bin_image)
                     filtered = filtered / np.max(filtered)
-                    pds.append(cubical.fit_transform(filtered))
+                    dgms = cubical.fit_transform(filtered)
+                    pds.append(self.__reshape_dgm(dgms))
+                    bar.update(1)
             if filtration == 'erosion':
+                bar.total = len(params)
+                bar.refresh()
                 for i in range(len(params)):
                     er_fil = ErosionFiltration(n_iterations=int(params[i]))
                     filtered = er_fil.fit_transform(bin_image)
                     filtered = filtered / np.max(filtered)
-                    pds.append(cubical.fit_transform(filtered))
+                    dgms = cubical.fit_transform(filtered)
+                    pds.append(self.__reshape_dgm(dgms))
+                    bar.update(1)
         return pds
 
     def __reformat_pad_diagrams(self, chunk):
@@ -282,13 +319,10 @@ class PDiagram():
         for filename in os.listdir(self.save_dir):
             if ".pkl" in filename:
                 with open(os.path.join(self.save_dir,filename), 'rb') as f:
-                    [fil_params, man_dim, data] = \
-                        pickle.load(f)
+                    [fil_params, data] = pickle.load(f)
                     equal = True
-                    if self.num_images != data.shape[0]:
+                    if self.num_images != data[0].shape[0]:
                         equal = False
-                    if self.man_dim != man_dim:
-                        equal=False
                     if set(self.fil_params.keys()) != set(fil_params.keys()):
                         equal = False
                     for filtration in self.fil_params:
@@ -303,18 +337,11 @@ class PDiagram():
                                 if not np.array_equal(vin[k],vself[k]):
                                     equal = False
                     if equal:
-                        pds = data
+                        print('Loaded persistence diagrams.')
+                        return data
 
-        if not equal:
-            pds = self.__get_pds()
-
-        # Get number of filtrations
-        num_of_filtrations = len(pds)
-        max_num_of_points = []
-        for _ in range(num_of_filtrations):
-            max_num_of_points.append(pds[_].shape[1])
-        sam = pds[0]
-        num_of_hom = len(set(sam[0,:,2]))
+        print('Computing persistence diagrams.')
+        pds = self.__get_pds()
 
         # # Save to file
         fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0,1000)))
@@ -322,4 +349,93 @@ class PDiagram():
         pickle.dump([self.fil_params, pds], out_file, protocol=-1)
         out_file.close()
 
-        return pds, num_of_filtrations, num_of_hom, max_num_of_points
+        return pds
+
+
+class GraphPDiagram():
+    '''
+        Main class the computes PDs for graphs
+    '''
+    def __init__(self, graphs):
+        self.graphs = graphs
+
+    def compute_vr_persistence(self):
+        '''
+            Computes the Vietoris Rips Persistence
+        '''
+        distances = []
+        print('Computing Vietoris Rips Graph Persistence')
+        for graph in tqdm(self.graphs):
+            np_graph = nx.convert_matrix.to_numpy_array(graph)
+            np_graph = np.expand_dims(np_graph, axis=0)
+            dist = GraphGeodesicDistance().fit_transform(np_graph)
+            max_val = np.max(dist)
+            distances.append(np.squeeze(dist))
+        vr = VietorisRipsPersistence(metric='precomputed',
+                                     n_jobs=-1, max_edge_length=max_val).fit_transform(distances)
+        return self.__reshape_dgm(vr)
+
+    def __reshape_dgm(self, dgms):
+        '''
+            Splits diagrams accross homology classes
+        '''
+        N = dgms.shape[0]
+        pnts = dgms.shape[1]
+        out = np.zeros(shape=(N,2,pnts,2))
+        for ind in range(dgms.shape[0]):
+            cur0 = dgms[ind]
+            cur1 = dgms[ind]
+            cur0[cur0[:,2] == 1] = 0
+            cur1[cur1[:,2] == 0] = 0
+            out[ind,0,:,:] = cur0[:,:2]
+            out[ind,1,:,:] = cur1[:,:2]
+
+        return out
+
+    def __get_filtration_values(self, graph, sublevel):
+        '''
+            Returns the sorted filtration values for the given sublevel set function
+        '''
+        if sublevel == 'degree':
+            degrees = sorted([d for (n, d) in graph.degree()])
+            degrees = list(set(degrees))
+            return degrees
+        if sublevel == 'clustering':
+            coef = sorted([c for (n, c) in nx.clustering(graph).items()])
+            coef = list(set(coef))
+            return coef
+
+    def __check_sublevel(self, graph, u, val, sublevel):
+        '''
+            Checks if given node is bellow the given filtration value
+        '''
+        if sublevel == 'degree':
+            return graph.degree(u) <= val
+        if sublevel == 'clustering':
+            return nx.clustering(graph, u) <= val
+
+    def __compute_lower_star_peristence(self, sublevel):
+        '''
+            Compute PDs by creating a complex using the node degree as sublevel function
+        '''
+        for graph in self.graphs:
+            values = self.__get_filtration_values(graph, sublevel)
+            filtration = []
+            subgraphs = []
+            for val in values:
+                subgraph = []
+                for edge in graph.edges:
+                    u, v = edge
+                    if self.__check_sublevel(graph, u, val, sublevel):
+                        filtration.append(([u], val))
+                        subgraph.append(u)
+                    if self.__check_sublevel(graph, v, val, sublevel):
+                        filtration.append(([v], val))
+                        subgraph.append(v)
+                    if self.__check_sublevel(graph, u, val, sublevel) \
+                            and self.__check_sublevel(self, graph, v, val, sublevel):
+                        filtration.append(([u, v], val))
+                subgraphs.append(subgraph)
+            dgms = cm.phat_diagrams(filtration, show_inf=True)
+
+

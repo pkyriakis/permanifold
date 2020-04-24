@@ -11,18 +11,15 @@ class PManifold(tf.keras.layers.Layer):
         its points embedded in a m-dim Euclidean space
     '''
 
-    def __init__(self, input_shape, K, space = 'poincare'):
+    def __init__(self, max_num_of_points, man_dim, num_of_hom, K, space = 'poincare'):
         '''
             Initializes layer params, i.e theta's
-            :param K: the number of projection bases
-            :param m: the dimension of the manifold
-            :param num_of_hom: int, the number of homology classes
         '''
         super(PManifold, self).__init__()
         self.K = K
-        self.num_of_hom = input_shape[0]
-        self.max_num_of_points = input_shape[1]
-        self.man_dim = input_shape[2]
+        self.num_of_hom = num_of_hom
+        self.max_num_of_points = max_num_of_points
+        self.man_dim = man_dim
         self.x_o = tf.zeros(shape=(self.man_dim,))  # the fixed point on the manifold
 
         if space == 'poincare':
@@ -35,12 +32,6 @@ class PManifold(tf.keras.layers.Layer):
                                                           dtype=tf.float32),
                                  trainable=True)
 
-    def compute_output_shape(self, input_shape):
-        '''
-            Returns the shape of the output tensor
-        '''
-        return [-1, self.num_of_hom*self.K*self.man_dim]
-
     def process_dgm(self, dgm, ind):
         '''
             Compute the representation of a diagram
@@ -48,6 +39,7 @@ class PManifold(tf.keras.layers.Layer):
 
         # Replicate diagram self.K times
         tilled_dgm = tf.tile(dgm, [1, self.K, 1])
+        tilled_dgm = tf.pad(tilled_dgm, paddings=[[0,0],[0,0],[0,self.man_dim-2]])
 
         # Replicate lernable vars self.max_num_of_points times
         tilled_theta = tf.tile(self.theta[ind,:,:], multiples=[1, self.max_num_of_points])
@@ -84,11 +76,10 @@ class PManifold(tf.keras.layers.Layer):
         '''
             Call method of Keras Layers
         '''
-        dgms = inputs
         # Get the diagrams for the two homology classes
         # TODO generalize to m classes
-        dgm_0 = tf.squeeze(dgms[:, 0, :, :])  # first homology class
-        dgm_1 = tf.squeeze(dgms[:, 1, :, :])  # second one
+        dgm_0 = inputs[:,0,:,:]  # zero-th homology class
+        dgm_1 = inputs[:,1,:,:]  # first homology class
 
         # Get and concat outputs
         out_0 = self.process_dgm(dgm_0, 0)
