@@ -11,7 +11,7 @@ class PManifold(tf.keras.layers.Layer):
         its points embedded in a m-dim Euclidean space
     '''
 
-    def __init__(self, max_num_of_points, man_dim, num_of_hom, K, space = 'poincare'):
+    def __init__(self, max_num_of_points, man_dim, num_of_hom, K, space='poincare'):
         '''
             Initializes layer params, i.e theta's
         '''
@@ -39,10 +39,10 @@ class PManifold(tf.keras.layers.Layer):
 
         # Replicate diagram self.K times
         tilled_dgm = tf.tile(dgm, [1, self.K, 1])
-        tilled_dgm = tf.pad(tilled_dgm, paddings=[[0,0],[0,0],[0,self.man_dim-2]])
+        tilled_dgm = tf.pad(tilled_dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
 
         # Replicate lernable vars self.max_num_of_points times
-        tilled_theta = tf.tile(self.theta[ind,:,:], multiples=[1, self.max_num_of_points])
+        tilled_theta = tf.tile(self.theta[ind, :, :], multiples=[1, self.max_num_of_points])
         tilled_theta = tf.reshape(tilled_theta, shape=[-1, self.man_dim])
 
         # Transform to manifold
@@ -78,14 +78,14 @@ class PManifold(tf.keras.layers.Layer):
         '''
         # Get the diagrams for the two homology classes
         # TODO generalize to m classes
-        dgm_0 = inputs[:,0,:,:]  # zero-th homology class
-        dgm_1 = inputs[:,1,:,:]  # first homology class
+        dgm_0 = inputs[:, 0, :, :]  # zero-th homology class
+        dgm_1 = inputs[:, 1, :, :]  # first homology class
 
         # Get and concat outputs
         out_0 = self.process_dgm(dgm_0, 0)
         out_1 = self.process_dgm(dgm_1, 1)
         out_0 = tf.expand_dims(out_0, axis=1)
         out_1 = tf.expand_dims(out_1, axis=1)
-        out = tf.concat([out_0,out_1], axis=1)
+        out = tf.concat([out_0, out_1], axis=1)
 
         return out

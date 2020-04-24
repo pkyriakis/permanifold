@@ -16,7 +16,6 @@ class Poincare:
     def tf_norm(self, x):
         return tf.norm(x, keepdims=True)
 
-
     def tf_lambda_x(self, x, c):
         return 2. / (1 - c * self.tf_dot(x,x))
 
@@ -95,5 +94,13 @@ class Lorenz:
     '''
             Defines several helper functions needed by the Lorenz model
             such as exp and log maps and the coordinate chart and parameterization
+    '''
+    pass
+
+
+class Eucledian:
+    '''
+                Defines several helper functions needed by the Lorenz model
+                such as exp and log maps and the coordinate chart and parameterization
     '''
     pass
