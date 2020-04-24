@@ -5,7 +5,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import tensorflow as tf
 import model
 
-def train(x_train, y_train, x_test, y_test, man_dim, K, units=None):
+def train(x_train, y_train, x_test, y_test, man_dim, K, train_params):
     '''
         Sets up and trains the model
 
@@ -19,8 +19,9 @@ def train(x_train, y_train, x_test, y_test, man_dim, K, units=None):
         Note: num_of_hom is set statically to 2. It is known for graphs/images.
               @PManifoldLayer can only handle two homology classes so far.
     '''
-    if units is None:
-        units = [256, 128, 10]
+    units = train_params['units']
+    epochs = train_params['epochs']
+    batch_size = train_params['batch_size']
 
     num_of_filtrations =  len(x_train)
     num_of_hom = 2 # = x_train[0].shape[1]
@@ -46,8 +47,8 @@ def train(x_train, y_train, x_test, y_test, man_dim, K, units=None):
 
     per_model.fit(x=x_train,
                   y=y_train,
-                  epochs=10,
-                  batch_size=64,
+                  epochs=epochs,
+                  batch_size=batch_size,
                   callbacks=[tensorboard_callback],
                   validation_data=(x_test, y_test))
 

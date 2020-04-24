@@ -199,13 +199,14 @@ class ImagePDiagram():
         pnts = dgms.shape[1]
         out = np.zeros(shape=(N,2,pnts,2))
         for ind in range(dgms.shape[0]):
-            cur0 = dgms[ind]
-            cur1 = dgms[ind]
-            cur0[cur0[:,2] == 1] = 0
-            cur1[cur1[:,2] == 0] = 0
+            cur0 = dgms[ind].copy()
+            cur1 = dgms[ind].copy()
+            mask0 = (cur0[:,2] == np.ones_like(cur0[:,2]))
+            mask1 = (cur1[:,2] == np.zeros_like(cur1[:,2]))
+            cur0[mask0] = 0
+            cur1[mask1] = 0
             out[ind,0,:,:] = cur0[:,:2]
             out[ind,1,:,:] = cur1[:,:2]
-
         return out
 
     def __get_pds(self):
@@ -383,13 +384,14 @@ class GraphPDiagram():
         pnts = dgms.shape[1]
         out = np.zeros(shape=(N,2,pnts,2))
         for ind in range(dgms.shape[0]):
-            cur0 = dgms[ind]
-            cur1 = dgms[ind]
-            cur0[cur0[:,2] == 1] = 0
-            cur1[cur1[:,2] == 0] = 0
+            cur0 = dgms[ind].copy()
+            cur1 = dgms[ind].copy()
+            mask0 = (cur0[:,2] == np.ones_like(cur0[:,2]))
+            mask1 = (cur1[:,2] == np.zeros_like(cur1[:,2]))
+            cur0[mask0] = 0
+            cur1[mask1] = 0
             out[ind,0,:,:] = cur0[:,:2]
             out[ind,1,:,:] = cur1[:,:2]
-
         return out
 
     def __get_filtration_values(self, graph, sublevel):

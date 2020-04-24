@@ -5,7 +5,7 @@ import math
 import os
 import utils
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 from persistence_diagram import *
 from sklearn.model_selection import train_test_split
@@ -63,7 +63,6 @@ def get_data_graphs(graphs_id):
     graphs, labels = utils.get_graphs(graphs_id)
     graph_pd = GraphPDiagram(graphs)
     diagrams = graph_pd.compute_vr_persistence()
-
     return train_test_split(diagrams, labels, test_size=0.25)
 
 
@@ -91,6 +90,13 @@ n_iter_dil = np.array([])
 
 images_id = 'mnist'
 
-x_train, y_train, x_test, y_test =\
-    get_data_images(images_id, directions, center, radius, n_iter_er, n_iter_dil)
-train(x_train, y_train, x_test, y_test, 4, 20)
+train_params = {'units': [128,64,10],
+                'epochs': 20,
+                'batch_size': 64
+                }
+# x_train, y_train, x_test, y_test =\
+#     get_data_images(images_id, directions, center, radius, n_iter_er, n_iter_dil)
+
+graphs_id = 'IMDB_BINARY'
+x_train, x_test, y_train, y_test = get_data_graphs(graphs_id)
+train(x_train, y_train, x_test, y_test, man_dim=4, K=20, train_params=train_params)

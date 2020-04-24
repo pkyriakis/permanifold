@@ -63,7 +63,7 @@ def get_mpeg_data(dir='datasets/mpeg7', new_size=28, train_split = 0.8):
     x_train, x_test = data[inds[:n]], data[inds[n:]]
     y_train, y_test = labels[inds[:n]], labels[inds[n:]]
 
-    return x_train, y_train, x_test, y_test, labels_map
+    return x_train, y_train, x_test, y_test
 
 def get_cifar():
     '''
