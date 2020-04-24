@@ -22,6 +22,7 @@ class ImagePDiagram():
     '''
         Main class that generates PDs for images
     '''
+
     def __init__(self, images, fil_parms, images_id='mnist'):
         self.images = images
         self.save_dir = 'diagrams/' + images_id + "/"
@@ -50,7 +51,6 @@ class ImagePDiagram():
         death = point[1]
         return [birth, death - birth]
 
-
     def __appr_integral(self, fun, x_low, x_up, y_low, y_up, K=5):
         '''
             Approxiamates the 2d integral of the given function over a K-grid
@@ -69,7 +69,7 @@ class ImagePDiagram():
         '''
             Vectorize the given chunk of PDs
         '''
-        cov =  .2*np.eye(2)
+        cov = .2 * np.eye(2)
         phi = lambda x, y, mu: multivariate_normal(mean=mu, cov=cov).pdf([x, y])
         grid_dim = int(np.sqrt(self.man_dim) + 1)
         for index in chunk:
@@ -113,7 +113,7 @@ class ImagePDiagram():
                                 x_up = mx[i, j + 1]
                                 y_low = my[i, j]
                                 y_up = my[i + 1, j]
-                                vectorized_dgm[cnt, int(hom)] = self.__appr_integral(rho, x_low, x_up, y_low, y_up )
+                                vectorized_dgm[cnt, int(hom)] = self.__appr_integral(rho, x_low, x_up, y_low, y_up)
                                 cnt += 1
 
                     vdgms_filtration[ind] = vectorized_dgm
@@ -164,7 +164,7 @@ class ImagePDiagram():
                             embeded_point.append(hom)
                             embeded_points.append(embeded_point)
                     edgm_param[par_ind] = np.array(embeded_points)
-                edgm_image[filtration] =  edgm_param
+                edgm_image[filtration] = edgm_param
             self.edgms_dict[index] = edgm_image
             self.done.value += 1
 
@@ -186,7 +186,7 @@ class ImagePDiagram():
         # self.progress_bar = tqdm(total=total)
         # bp = multiprocessing.Process(target=self.__show_progress, args=(total,))
         # bp.start()
-        #jobs.append(bp)
+        # jobs.append(bp)
 
         for job in jobs:
             job.join()
@@ -197,16 +197,16 @@ class ImagePDiagram():
         '''
         N = dgms.shape[0]
         pnts = dgms.shape[1]
-        out = np.zeros(shape=(N,2,pnts,2))
+        out = np.zeros(shape=(N, 2, pnts, 2))
         for ind in range(dgms.shape[0]):
             cur0 = dgms[ind].copy()
             cur1 = dgms[ind].copy()
-            mask0 = (cur0[:,2] == np.ones_like(cur0[:,2]))
-            mask1 = (cur1[:,2] == np.zeros_like(cur1[:,2]))
+            mask0 = (cur0[:, 2] == np.ones_like(cur0[:, 2]))
+            mask1 = (cur1[:, 2] == np.zeros_like(cur1[:, 2]))
             cur0[mask0] = 0
             cur1[mask1] = 0
-            out[ind,0,:,:] = cur0[:,:2]
-            out[ind,1,:,:] = cur1[:,:2]
+            out[ind, 0, :, :] = cur0[:, :2]
+            out[ind, 1, :, :] = cur1[:, :2]
         return out
 
     def __get_pds(self):
@@ -216,7 +216,7 @@ class ImagePDiagram():
         '''
         binarizer = Binarizer(n_jobs=-1)
         bin_image = binarizer.fit_transform(self.images)
-        pds = [] # List containing PDs for each filtration
+        pds = []  # List containing PDs for each filtration
         bar = tqdm(total=0)
         for filtration, params in self.fil_params.items():
             cubical = CubicalPersistence(homology_dimensions=(0, 1), n_jobs=-1)
@@ -240,7 +240,7 @@ class ImagePDiagram():
                 center = params['center']
                 radius = params['radius']
                 cnt = 0
-                bar.total =center.shape[0]*radius.shape[0]
+                bar.total = center.shape[0] * radius.shape[0]
                 bar.refresh()
                 for i in range(center.shape[0]):
                     for j in range(radius.shape[0]):
@@ -252,7 +252,7 @@ class ImagePDiagram():
                         cnt += 1
                         bar.update(1)
             if filtration == 'dilation':
-                bar.total=len(params)
+                bar.total = len(params)
                 bar.refresh()
                 for i in range(len(params)):
                     dial_fil = DilationFiltration(n_iterations=int(params[i]))
@@ -319,7 +319,7 @@ class ImagePDiagram():
         equal = False
         for filename in os.listdir(self.save_dir):
             if ".pkl" in filename:
-                with open(os.path.join(self.save_dir,filename), 'rb') as f:
+                with open(os.path.join(self.save_dir, filename), 'rb') as f:
                     [fil_params, data] = pickle.load(f)
                     equal = True
                     if self.num_images != data[0].shape[0]:
@@ -330,12 +330,12 @@ class ImagePDiagram():
                         vself = self.fil_params[filtration]
                         vin = fil_params[filtration]
                         if type(vin).__module__ == np.__name__:
-                            if not np.array_equal(vin,vself):
+                            if not np.array_equal(vin, vself):
                                 equal = False
                                 break
                         if type(vin) is dict:
                             for k in vin.keys():
-                                if not np.array_equal(vin[k],vself[k]):
+                                if not np.array_equal(vin[k], vself[k]):
                                     equal = False
                     if equal:
                         print('Loaded persistence diagrams.')
@@ -345,7 +345,7 @@ class ImagePDiagram():
         pds = self.__get_pds()
 
         # # Save to file
-        fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0,1000)))
+        fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0, 1000)))
         out_file = open(fname, 'wb')
         pickle.dump([self.fil_params, pds], out_file, protocol=-1)
         out_file.close()
@@ -357,6 +357,7 @@ class GraphPDiagram():
     '''
         Main class the computes PDs for graphs
     '''
+
     def __init__(self, graphs):
         self.graphs = graphs
 
@@ -382,16 +383,16 @@ class GraphPDiagram():
         '''
         N = dgms.shape[0]
         pnts = dgms.shape[1]
-        out = np.zeros(shape=(N,2,pnts,2))
+        out = np.zeros(shape=(N, 2, pnts, 2))
         for ind in range(dgms.shape[0]):
             cur0 = dgms[ind].copy()
             cur1 = dgms[ind].copy()
-            mask0 = (cur0[:,2] == np.ones_like(cur0[:,2]))
-            mask1 = (cur1[:,2] == np.zeros_like(cur1[:,2]))
+            mask0 = (cur0[:, 2] == np.ones_like(cur0[:, 2]))
+            mask1 = (cur1[:, 2] == np.zeros_like(cur1[:, 2]))
             cur0[mask0] = 0
             cur1[mask1] = 0
-            out[ind,0,:,:] = cur0[:,:2]
-            out[ind,1,:,:] = cur1[:,:2]
+            out[ind, 0, :, :] = cur0[:, :2]
+            out[ind, 1, :, :] = cur1[:, :2]
         return out
 
     def __get_filtration_values(self, graph, sublevel):
@@ -416,7 +417,7 @@ class GraphPDiagram():
         if sublevel == 'clustering':
             return nx.clustering(graph, u) <= val
 
-    def __compute_lower_star_peristence(self, sublevel):
+    def __compute_lower_star_persistence(self, sublevel):
         '''
             Compute PDs by creating a complex using the node degree as sublevel function
         '''
@@ -439,5 +440,3 @@ class GraphPDiagram():
                         filtration.append(([u, v], val))
                 subgraphs.append(subgraph)
             dgms = cm.phat_diagrams(filtration, show_inf=True)
-
-

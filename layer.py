@@ -1,7 +1,5 @@
 import tensorflow as tf
-import utils, manifolds
-from datetime import datetime
-import numpy as np
+import manifolds
 
 
 class PManifold(tf.keras.layers.Layer):
@@ -47,6 +45,7 @@ class PManifold(tf.keras.layers.Layer):
 
         # Transform to manifold
         x = self.manifold.tf_parametrization(tilled_dgm, self.man_dim)
+
         # Add lernable vars
         x = tf.add(x, tilled_theta)
 
@@ -77,7 +76,8 @@ class PManifold(tf.keras.layers.Layer):
             Call method of Keras Layers
         '''
         # Get the diagrams for the two homology classes
-        # TODO generalize to m classes
+        # Two classes are sufficient for images/graphs
+        # TODO generalize to m classes in the future
         dgm_0 = inputs[:, 0, :, :]  # zero-th homology class
         dgm_1 = inputs[:, 1, :, :]  # first homology class
 

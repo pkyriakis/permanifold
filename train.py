@@ -1,9 +1,7 @@
 import datetime
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-
 import tensorflow as tf
 import model
+
 
 def train(x_train, y_train, x_test, y_test, man_dim, K, train_params):
     '''
@@ -23,8 +21,8 @@ def train(x_train, y_train, x_test, y_test, man_dim, K, train_params):
     epochs = train_params['epochs']
     batch_size = train_params['batch_size']
 
-    num_of_filtrations =  len(x_train)
-    num_of_hom = 2 # = x_train[0].shape[1]
+    num_of_filtrations = len(x_train)
+    num_of_hom = 2  # = x_train[0].shape[1]
     max_num_of_points = []
     for i in range(num_of_filtrations):
         max_num_of_points.append(x_train[i].shape[2])
@@ -35,6 +33,7 @@ def train(x_train, y_train, x_test, y_test, man_dim, K, train_params):
 
     # Instantiate an optimizer.
     optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
+
     # Instantiate a loss function.
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
@@ -51,5 +50,3 @@ def train(x_train, y_train, x_test, y_test, man_dim, K, train_params):
                   batch_size=batch_size,
                   callbacks=[tensorboard_callback],
                   validation_data=(x_test, y_test))
-
-
