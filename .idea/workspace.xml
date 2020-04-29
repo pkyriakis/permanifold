@@ -20,17 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df033e41-a3c0-4833-bc66-eea7013a11ba" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/PerManifold.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PerManifold.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/layer.py" beforeDir="false" afterPath="$PROJECT_DIR$/layer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manifolds.py" beforeDir="false" afterPath="$PROJECT_DIR$/manifolds.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Persistance2d.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Persistance2d.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/persistence_diagram.py" beforeDir="false" afterPath="$PROJECT_DIR$/persistence_diagram.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
@@ -208,6 +202,7 @@
       <workItem from="1587720249587" duration="5132000" />
       <workItem from="1587789796247" duration="96313000" />
       <workItem from="1588105713532" duration="22369000" />
+      <workItem from="1588186477357" duration="11558000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit; coded persistence diagrams part">
       <created>1586205748520</created>
@@ -333,11 +328,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="merged into master" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="956" y="237" width="1527" height="1009" key="#Deployment" timestamp="1588111293657">
+    <state x="956" y="237" width="1527" height="1009" key="#Deployment" timestamp="1588186565617">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
     <state x="362" y="75" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1587150214834" />
-    <state x="956" y="237" width="1527" height="1009" key="#Deployment/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1588111293657" />
+    <state x="956" y="237" width="1527" height="1009" key="#Deployment/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1588186565617" />
     <state x="2226" y="509" width="1200" height="1009" key="#Docker" timestamp="1586388673475">
       <screen x="67" y="44" width="3773" height="2116" />
     </state>
@@ -387,12 +382,12 @@
     </state>
     <state x="464" y="23" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1587172567790" />
     <state x="1206" y="500" width="1484" height="1209" key="CommitChangelistDialog2/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1587720917475" />
-    <state x="3942" y="100" width="3637" height="1958" key="DiffContextDialog" timestamp="1588131959793">
+    <state x="4302" y="0" width="3573" height="1918" maximized="true" key="DiffContextDialog" timestamp="1588201891148">
       <screen x="3840" y="0" width="3840" height="2160" />
     </state>
     <state x="41" y="38" width="1455" height="747" key="DiffContextDialog/0.0.1536.824@0.0.1536.824" timestamp="1586823016610" />
     <state x="3942" y="100" width="3637" height="1958" key="DiffContextDialog/67.44.3773.2116/3840.0.3840.2160@3840.0.3840.2160" timestamp="1588131959793" />
-    <state x="167" y="142" width="3573" height="1918" key="DiffContextDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1588104337327" />
+    <state x="4302" y="0" width="3573" height="1918" maximized="true" key="DiffContextDialog/67.44.3773.2116/3840.0.3840.2160@67.44.3773.2116" timestamp="1588201891148" />
     <state x="94" y="94" width="1349" height="637" key="DirDiffDialog" timestamp="1586912461711">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

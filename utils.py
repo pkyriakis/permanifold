@@ -37,7 +37,7 @@ def get_mnist_data(binirize = False, fashion = False):
     return train_images, train_labels, test_images, test_labels
 
 
-def get_mpeg_data(dir='datasets/mpeg7/', new_size=128, train_split = 0.9):
+def get_mpeg_data(dir='datasets/mpeg7/', new_size=64, train_split = 0.9):
     '''
         Reads a pre-processes the MPEG7 dataset
     '''
@@ -85,7 +85,7 @@ def get_mpeg_data(dir='datasets/mpeg7/', new_size=128, train_split = 0.9):
     inds = np.random.permutation(data.shape[0])
     x_train, x_test = data[inds[:n]], data[inds[n:]]
     y_train, y_test = labels[inds[:n]], labels[inds[n:]]
-    print(x_train.shape)
+
     return x_train, y_train, x_test, y_test
 
 def get_cifar():

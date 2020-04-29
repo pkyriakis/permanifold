@@ -4,13 +4,13 @@
 import math
 import os
 import utils
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3"
+import tensorflow as tf
 
 from persistence_diagram import *
 from train import train
 from tensorboard.plugins.hparams import api as hp
-import tensorflow as tf
+
 
 def get_data_images(images_id):
     '''
@@ -29,8 +29,8 @@ def get_data_images(images_id):
 
     ## Set the params of the filtrations
     # Height filtration
-    num_of_vects = 30
-    angles = np.linspace(0, math.pi / 2, num_of_vects)
+    num_of_vects = 10
+    angles = np.linspace(0, 2 * math.pi, num_of_vects)
     directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
     directions = np.array(directions)
 
@@ -46,10 +46,10 @@ def get_data_images(images_id):
 
     # Dilation filtration
     n_iter_dil = np.array([1, 3, 5, 10, 50])
-    # n_iter_dil = np.array([])
+    n_iter_dil = np.array([])
 
     # Set filtration params
-    params = {'cubical': None,
+    params = {'cubical': False,
               'height': directions,
               'radial': {'center': center,
                          'radius': radius
@@ -99,7 +99,7 @@ def get_data_graphs(graphs_id):
     x_train = []
     x_test = []
     for diagram in diagrams:
-        x_train.append(diagram[:N_train])
+        x_train.append(diagram)
         x_test.append(diagram[N_train:])
 
     y_train = train_labels
@@ -107,45 +107,51 @@ def get_data_graphs(graphs_id):
 
     return x_train, y_train, x_test, y_test
 
-# Set dataset
-data_id = 'mnist'
-x_train, y_train, x_test, y_test =\
-    get_data_images(data_id)
 
-# graphs_id = 'MUTAG'
-# x_train, y_train, x_test, y_test = get_data_graphs(graphs_id)
+def main(d_type, data_id):
+    # Get dataset
+    if d_type == 'images':
+        x_train, y_train, x_test, y_test = \
+            get_data_images(data_id)
+    else:
+        x_train, y_train, x_test, y_test = get_data_graphs(data_id)
 
-# Mirrored strategy for distributed training
-strategy = tf.distribute.MirroredStrategy()
+    # Mirrored strategy for distributed training
+    strategy = tf.distribute.MirroredStrategy()
 
-# Set train params
-base_batch = 64
-batch_size = base_batch * strategy.num_replicas_in_sync
-train_params = {'units': [512, 256, 10],
-                'epochs': 100,
-                'batch_size': batch_size}
+    # Set train params
+    base_batch = 64
+    batch_size = base_batch * strategy.num_replicas_in_sync
+    train_params = {'units': [256, 128, 70],
+                    'epochs': 200,
+                    'batch_size': batch_size}
 
-# Set hyperparams to search over
-MAN_DIM = hp.HParam('man_dim', hp.Discrete([3]))
-PROJ_BASES = hp.HParam('proj_bases', hp.Discrete([30]))
-MANIFOLD = hp.HParam('proj_bases', hp.Discrete(['poincare']))
+    # Set hyperparams to search over
+    MAN_DIM = hp.HParam('man_dim', hp.Discrete([6, 9, 12]))
+    PROJ_BASES = hp.HParam('proj_bases', hp.Discrete([20]))
+    MANIFOLD = hp.HParam('proj_bases', hp.Discrete(['euclidean']))
 
-# Train for all hyperparams
-session_num = 0
-for man_dim in MAN_DIM.domain.values:
-    for proj_bases in PROJ_BASES.domain.values:
-        for manifold in MANIFOLD.domain.values:
-            hparams = {
-                'man_dim' : man_dim,
-                'proj_bases' : proj_bases,
-                'manifold' : manifold
-            }
-            # Print session info
-            run_name = "run-%d" % session_num
-            print('--- Starting trial: %s' % run_name)
-            print({h: hparams[h] for h in hparams.keys()})
-            # Train
-            train(x_train, y_train, x_test, y_test,
-                  train_params=train_params, hparams=hparams, strategy=strategy)
-            session_num += 1
+    # Train for all hyperparams
+    session_num = 0
+    for man_dim in MAN_DIM.domain.values:
+        for proj_bases in PROJ_BASES.domain.values:
+            for manifold in MANIFOLD.domain.values:
+                hparams = {
+                    'man_dim': man_dim,
+                    'proj_bases': proj_bases,
+                    'manifold': manifold
+                }
+                # Print session info
+                run_name = "run-%d" % session_num
+                print('--- Starting trial: %s' % run_name)
+                print({h: hparams[h] for h in hparams.keys()})
 
+                # Train
+                train(x_train, y_train, x_test, y_test,
+                      train_params=train_params, hparams=hparams,
+                      strategy=strategy, data_id=data_id)
+                session_num += 1
+
+
+if __name__ == '__main__':
+    main('images', 'mpeg7')

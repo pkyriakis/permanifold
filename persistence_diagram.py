@@ -214,7 +214,7 @@ class ImagePDiagram():
         bar = tqdm(total=0)
         for filtration, params in self.fil_params.items():
             cubical = CubicalPersistence(homology_dimensions=(0, 1), n_jobs=-1)
-            if filtration == 'cubical':
+            if filtration == 'cubical' and params:
                 bar.total = 1
                 bar.refresh()
                 dgms = cubical.fit_transform(self.images)
