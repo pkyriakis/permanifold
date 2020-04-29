@@ -182,12 +182,6 @@ class ImagePDiagram():
             p.start()
             jobs.append(p)
 
-        # total = len(indices)
-        # self.progress_bar = tqdm(total=total)
-        # bp = multiprocessing.Process(target=self.__show_progress, args=(total,))
-        # bp.start()
-        # jobs.append(bp)
-
         for job in jobs:
             job.join()
 
@@ -316,12 +310,14 @@ class ImagePDiagram():
             Get embedded PDs
         '''
         # Check if already there
-        equal = False
         for filename in os.listdir(self.save_dir):
             if ".pkl" in filename:
                 with open(os.path.join(self.save_dir, filename), 'rb') as f:
                     [fil_params, data] = pickle.load(f)
                     equal = True
+
+                    # Need to make sure that stored PD is generated using
+                    # the same filtration params as the ones provided
                     if self.num_images != data[0].shape[0]:
                         equal = False
                     if set(self.fil_params.keys()) != set(fil_params.keys()):
@@ -358,24 +354,102 @@ class GraphPDiagram():
         Main class the computes PDs for graphs
     '''
 
-    def __init__(self, graphs):
-        self.graphs = graphs
+    def __init__(self, graphs, graphs_id, filtrations=None):
+        if filtrations is None:
+            filtrations = ['vr', 'degree', 'avg_path']
 
-    def compute_vr_persistence(self):
+        self.graphs = graphs
+        self.graphs_id = graphs_id
+        self.filtrations = filtrations
+        self.save_dir = 'diagrams/' + graphs_id
+        self.distances = None
+        self.dgms = multiprocessing.Manager().dict()
+        self.max_num_of_points = multiprocessing.Manager().Value('i',0)
+
+        if not os.path.exists(self.save_dir):
+            os.makedirs(self.save_dir)
+
+    def __chunks(self, lst, n):
+        '''
+            Yield successive n-sized chunks from lst.
+        '''
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
+
+    def get_pds(self):
+        for filename in os.listdir(self.save_dir):
+            if ".pkl" in filename:
+                equal = True
+                with open(os.path.join(self.save_dir, filename), 'rb') as f:
+                    [filtrations, data] = pickle.load(f)
+                    for filtration in filtrations:
+                        if not filtration in self.filtrations:
+                            equal = False
+                    if equal:
+                        print('Loaded persistence diagrams.')
+                        return data
+
+        pds = []
+        if 'vr' in self.filtrations:
+            print('Computing Vietoris Rips Graph Persistence')
+            pds.append(self.__compute_vr_persistence())
+        if 'degree' in self.filtrations:
+            print('Computing Lower-Star Persistence using node degree')
+            pds.append(self.__get_lower_star_parallel('degree'))
+        if 'avg_path' in self.filtrations:
+            print('Computing Lower-Star Persistence using average path length')
+            pds.append(self.__get_lower_star_parallel('avg_path'))
+
+        # # Save to file
+        fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0, 1000)))
+        out_file = open(fname, 'wb')
+        pickle.dump([self.filtrations, pds], out_file, protocol=-1)
+        out_file.close()
+
+        return pds
+
+    def __set_distance_matrix(self):
+        '''
+            Computes and stores the distance matrix for all graphs
+        '''
+        list_adj = []
+
+        # Convert to list of np.array adj martices
+        for graph in self.graphs:
+            adj = nx.convert_matrix.to_numpy_array(graph)
+            list_adj.append(adj)
+
+        # Get distances
+        distances = GraphGeodesicDistance(n_jobs=-1).\
+            fit_transform(list_adj)
+        self.distances = list(distances)
+
+    def __compute_vr_persistence(self):
         '''
             Computes the Vietoris Rips Persistence
         '''
-        distances = []
-        print('Computing Vietoris Rips Graph Persistence')
-        for graph in tqdm(self.graphs):
-            np_graph = nx.convert_matrix.to_numpy_array(graph)
-            np_graph = np.expand_dims(np_graph, axis=0)
-            dist = GraphGeodesicDistance().fit_transform(np_graph)
-            max_val = np.max(dist)
-            distances.append(np.squeeze(dist))
-        vr = VietorisRipsPersistence(metric='precomputed',
-                                     n_jobs=-1, max_edge_length=max_val).fit_transform(distances)
-        return self.__reshape_dgm(vr)
+
+        # Get distance if not there
+        if self.distances is None:
+            self.__set_distance_matrix()
+
+        # Compute max distance
+        max_dist = []
+        for ind in range(len(self.distances)):
+            dist = np.max(self.distances[ind])
+            max_dist.append(dist)
+
+        dgms = VietorisRipsPersistence(metric='precomputed',
+                                     n_jobs=-1).fit_transform(self.distances)
+
+        # Replace inf value with max distance in corresponding graph
+        clipped_dgms = []
+        for dgm, m_dist in zip(dgms, max_dist):
+            dgm[dgm == np.inf] = m_dist
+            clipped_dgms.append(dgm)
+        clipped_dgms = np.array(clipped_dgms)
+
+        return self.__reshape_dgm(clipped_dgms)
 
     def __reshape_dgm(self, dgms):
         '''
@@ -395,10 +469,11 @@ class GraphPDiagram():
             out[ind, 1, :, :] = cur1[:, :2]
         return out
 
-    def __get_filtration_values(self, graph, sublevel):
+    def __get_filtration_values(self, ind, sublevel):
         '''
             Returns the sorted filtration values for the given sublevel set function
         '''
+        graph = self.graphs[ind]
         if sublevel == 'degree':
             degrees = sorted([d for (n, d) in graph.degree()])
             degrees = list(set(degrees))
@@ -407,36 +482,108 @@ class GraphPDiagram():
             coef = sorted([c for (n, c) in nx.clustering(graph).items()])
             coef = list(set(coef))
             return coef
+        if sublevel == 'avg_path':
+            dist = self.distances[ind]
+            means = np.mean(dist, axis=0)
 
-    def __check_sublevel(self, graph, u, val, sublevel):
+            return sorted(means)
+
+    def __check_sublevel(self, ind, u, val, sublevel):
         '''
             Checks if given node is bellow the given filtration value
         '''
+        graph = self.graphs[ind]
         if sublevel == 'degree':
             return graph.degree(u) <= val
         if sublevel == 'clustering':
             return nx.clustering(graph, u) <= val
+        if sublevel == 'avg_path':
+            dist = self.distances[ind]
+            val_u = np.mean(dist[u,:])
+            return val_u <= val
 
-    def __compute_lower_star_persistence(self, sublevel):
+    def __compute_lower_star_persistence(self, sublevel, chunk):
         '''
-            Compute PDs by creating a complex using the node degree as sublevel function
+            Compute PDs by creating a complex using the given sublevel function
         '''
-        for graph in self.graphs:
-            values = self.__get_filtration_values(graph, sublevel)
+        max_num_of_points = 0
+        dgms = dict()
+        for ind in chunk:
+            graph = self.graphs[ind]
+            values = self.__get_filtration_values(ind, sublevel)
             filtration = []
             subgraphs = []
+
+            # Get filtration
             for val in values:
                 subgraph = []
                 for edge in graph.edges:
                     u, v = edge
-                    if self.__check_sublevel(graph, u, val, sublevel):
+                    if self.__check_sublevel(ind, u, val, sublevel):
                         filtration.append(([u], val))
                         subgraph.append(u)
-                    if self.__check_sublevel(graph, v, val, sublevel):
+                    if self.__check_sublevel(ind, v, val, sublevel):
                         filtration.append(([v], val))
                         subgraph.append(v)
-                    if self.__check_sublevel(graph, u, val, sublevel) \
-                            and self.__check_sublevel(self, graph, v, val, sublevel):
+                    if self.__check_sublevel(ind, u, val, sublevel) \
+                            and self.__check_sublevel(ind, v, val, sublevel):
                         filtration.append(([u, v], val))
                 subgraphs.append(subgraph)
-            dgms = cm.phat_diagrams(filtration, show_inf=True)
+
+            # Get persistence diagram
+            dgm = cm.phat_diagrams(filtration, show_inf=True, verbose=False)
+
+            # Replace inf values
+            tmp0 = dgm[0]
+            tmp0[tmp0 == np.inf] = values[-1]
+            tmp1 = dgm[1]
+            tmp1[tmp1 == np.inf] = values[-1]
+            dgm = [tmp0, tmp1]
+
+            # Update max number of points
+            new_pnts = max(dgm[0].shape[0], dgm[1].shape[0])
+            self.max_num_of_points.value = max(self.max_num_of_points.value, new_pnts)
+
+            # Store
+            self.dgms[ind] = dgm
+
+    def __post_process_dgms(self):
+        '''
+            Post-processes diagrams after parallel computation is done
+        '''
+        # Convert to np.array
+        N = len(self.dgms.keys())
+        out = np.zeros(shape=(N, 2, self.max_num_of_points.value, 2))
+        for ind, _ in enumerate(self.graphs):
+            dgm0 = self.dgms[ind][0]
+            out[ind, 0, :dgm0.shape[0], :] = dgm0
+            dgm1 = self.dgms[ind][1]
+            out[ind, 1, :dgm1.shape[0], :] = dgm1
+        return out
+
+
+    def __get_lower_star_parallel(self, sublevel):
+        '''
+            Parellel run of target; the given list of indices creates the chunks to allocate to each cpu
+        '''
+        indices = range(len(self.graphs))
+        cpus = multiprocessing.cpu_count()
+        chuck_size = math.ceil(len(indices) / cpus)
+
+        target = self.__compute_lower_star_persistence
+        jobs = []
+        for chunk in self.__chunks(indices, chuck_size):
+            p = multiprocessing.Process(target=target,
+                                        args=(sublevel, chunk))
+            p.start()
+            jobs.append(p)
+        for job in jobs:
+            job.join()
+
+        diagrams = self.__post_process_dgms()
+
+        # Reset shared vars
+        self.dgms = multiprocessing.Manager().dict()
+        self.max_num_of_points = multiprocessing.Manager().Value('i', 0)
+
+        return diagrams

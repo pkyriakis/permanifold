@@ -9,7 +9,7 @@ class PManifold(tf.keras.layers.Layer):
         its points embedded in a m-dim Euclidean space
     '''
 
-    def __init__(self, max_num_of_points, man_dim, num_of_hom, K, space='poincare'):
+    def __init__(self, max_num_of_points, man_dim, num_of_hom, K, manifold='poincare'):
         '''
             Initializes layer params, i.e theta's
         '''
@@ -18,10 +18,16 @@ class PManifold(tf.keras.layers.Layer):
         self.num_of_hom = num_of_hom
         self.max_num_of_points = max_num_of_points
         self.man_dim = man_dim
-        self.x_o = tf.zeros(shape=(self.man_dim,))  # the fixed point on the manifold
 
-        if space == 'poincare':
-            self.manifold = manifolds.Poincare()
+        if manifold == 'poincare':
+            self.manifold = manifolds.Poincare(man_dim=man_dim)
+        if manifold == 'euclidean':
+            self.manifold = manifolds.Euclidean()
+        if manifold == 'lorenz':
+            self.manifold = manifolds.Lorenz(man_dim=man_dim)
+
+        self.x_o = tf.random.normal(shape=(self.man_dim,))  # the fixed point on the manifold
+        self.x_o = self.manifold.project_to_manifold(self.x_o)
 
         theta_init = tf.random_uniform_initializer()
         self.theta = tf.Variable(name='theta',
@@ -34,23 +40,22 @@ class PManifold(tf.keras.layers.Layer):
         '''
             Compute the representation of a diagram
         '''
+        padded_dgm = tf.pad(dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
+        man_dgm = self.manifold.parametrization(padded_dgm)
 
-        # Replicate diagram self.K times
-        tilled_dgm = tf.tile(dgm, [1, self.K, 1])
-        tilled_dgm = tf.pad(tilled_dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
+        man_dgm = tf.expand_dims(man_dgm, axis=-2)
+        man_dgm = tf.repeat(man_dgm, repeats=self.K, axis=-2)
 
-        # Replicate lernable vars self.max_num_of_points times
-        tilled_theta = tf.tile(self.theta[ind, :, :], multiples=[1, self.max_num_of_points])
-        tilled_theta = tf.reshape(tilled_theta, shape=[-1, self.man_dim])
-
-        # Transform to manifold
-        x = self.manifold.tf_parametrization(tilled_dgm, self.man_dim)
+        theta = tf.gather(self.theta, indices=ind, axis=0)
 
         # Add lernable vars
-        x = tf.add(x, tilled_theta)
+        x = tf.add(man_dgm, theta)
+
+        # Make sure that point still belongs to the manifold
+        x = self.manifold.project_to_manifold(x)
 
         # Transfer to tangent space
-        tangent_x = self.manifold.tf_log_map_x(self.x_o, x, 1.)
+        tangent_x = self.manifold.log_map_x(self.x_o, x)
         reshaped_tangent_x = tf.reshape(tangent_x,
                                         shape=[-1, self.max_num_of_points,
                                                self.K, self.man_dim])
@@ -58,18 +63,25 @@ class PManifold(tf.keras.layers.Layer):
         sums = tf.reduce_sum(reshaped_tangent_x, axis=1)
 
         # Transform back to manifold
-        x_dgm = self.manifold.tf_exp_map_x(self.x_o, sums, 1.)
+        x_dgm = self.manifold.exp_map_x(self.x_o, sums)
 
         # Transform to eucledian
-        y_dgm = self.manifold.tf_chart(x_dgm, self.man_dim)
+        y_dgm = self.manifold.chart(x_dgm)
+
         return tf.reshape(y_dgm, shape=[-1, self.K, self.man_dim])
 
     def get_config(self):
         config = super().get_config().copy()
         config.update({
             'projection_bases': self.K,
-            'num_of_hom': self.num_of_hom
+            'num_of_hom': self.num_of_hom,
+            'max_num_of_points': self.max_num_of_points,
+            'man_dim': self.man_dim,
+            'manifold': self.manifold,
+            'x_0': self.x_o,
+            'theta': self.theta
         })
+        return config
 
     def call(self, inputs):
         '''

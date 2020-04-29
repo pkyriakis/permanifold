@@ -1,6 +1,8 @@
 from layer import PManifold
 import tensorflow as tf
-def build_model(input_shape, man_dim, K, units=None):
+
+
+def build_model(input_shape, man_dim, K, manifold, units=None):
     '''
         Sets up a keras model using the PManifold is first layer
         Architecture past PManifold is as follows:
@@ -26,10 +28,9 @@ def build_model(input_shape, man_dim, K, units=None):
 
         # Create Persistent Manifold Layers
         pm_layer = PManifold(max_num_of_points=max_num_of_points[i], man_dim=man_dim,
-                             num_of_hom=num_of_hom, K=K)
+                             num_of_hom=num_of_hom, K=K, manifold=manifold)
         inputs.append(cur_input)
         in_layer.append(pm_layer(cur_input))
-
 
     # Flatten
     in_layer_2 = tf.concat(in_layer, axis=1)
@@ -41,7 +42,7 @@ def build_model(input_shape, man_dim, K, units=None):
                                         activation='relu')(flat)
 
     # Batch norm
-    batch_norm = tf.keras.layers.BatchNormalization()(flat)
+    batch_norm = tf.keras.layers.BatchNormalization()(dense1)
 
     # Second dense
     dense2 = tf.keras.layers.Dense(units[1],
