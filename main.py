@@ -8,12 +8,11 @@ import utils
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 from persistence_diagram import *
-from sklearn.model_selection import train_test_split
-
 from train import train
+from tensorboard.plugins.hparams import api as hp
+import tensorflow as tf
 
-
-def get_data_images(images_id, directions, center, radius, n_iter_er, n_iter_dil):
+def get_data_images(images_id):
     '''
         Obtains train/test data for the given image set using the provided filtration paramers
     '''
@@ -27,6 +26,27 @@ def get_data_images(images_id, directions, center, radius, n_iter_er, n_iter_dil
         train_images, train_labels, test_images, test_labels = utils.get_mpeg_data()
     else:  # Load mnist by default
         train_images, train_labels, test_images, test_labels = utils.get_mnist_data()
+
+    ## Set the params of the filtrations
+    # Height filtration
+    num_of_vects = 30
+    angles = np.linspace(0, math.pi / 2, num_of_vects)
+    directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
+    directions = np.array(directions)
+
+    # Radial filtration
+    center = np.array([[10, 10], [10, 20], [15, 15], [20, 10], [20, 20]])
+    radius = np.array([5, 8, 10, 12, 15])
+    center = np.array([])
+    radius = np.array([])
+
+    # Erosion filtration
+    n_iter_er = np.array([1, 2, 3, 50])
+    n_iter_er = np.array([])
+
+    # Dilation filtration
+    n_iter_dil = np.array([1, 3, 5, 10, 50])
+    # n_iter_dil = np.array([])
 
     # Set filtration params
     params = {'cubical': None,
@@ -63,43 +83,69 @@ def get_data_graphs(graphs_id):
     '''
         Obtains train/test data for the given graph dataset
     '''
-    graphs, labels = utils.get_graphs(graphs_id)
-    graph_pd = GraphPDiagram(graphs)
-    diagrams = graph_pd.compute_vr_persistence()
-    return train_test_split(diagrams, labels, test_size=0.25)
+    # Get train/test graphs
+    train_graphs, train_labels, test_graphs, test_labels = utils.get_graphs(graphs_id)
 
+    # Concat to one
+    N_train = len(train_graphs)
+    graphs = train_graphs + test_graphs
 
-## Set the params of the filtrations
-# Height filtration
-num_of_vects = 20
-angles = np.linspace(0, math.pi / 2, num_of_vects)
-directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
-directions = np.array(directions)
+    # Get PDs for all graphs
+    filtrations = ['vr', 'degree', 'avg_path']
+    graph_pd = GraphPDiagram(graphs, graphs_id=graphs_id, filtrations=filtrations)
+    diagrams = graph_pd.get_pds()
 
-# Radial filtration
-center = np.array([[10, 10], [10, 20], [15, 15], [20, 10], [20, 20]])
-radius = np.array([5, 8, 10, 12, 15])
-center = np.array([])
-radius = np.array([])
+    # Split them
+    x_train = []
+    x_test = []
+    for diagram in diagrams:
+        x_train.append(diagram[:N_train])
+        x_test.append(diagram[N_train:])
 
-# Erosion filtration
-n_iter_er = np.array([1, 2, 3, 50])
-#n_iter_er = np.array([])
+    y_train = train_labels
+    y_test = test_labels
 
-# Dilation filtration
-n_iter_dil = np.array([1, 3, 5, 10, 50])
-#n_iter_dil = np.array([])
+    return x_train, y_train, x_test, y_test
 
-images_id = 'mnist'
+# Set dataset
+data_id = 'mnist'
+x_train, y_train, x_test, y_test =\
+    get_data_images(data_id)
 
-train_params = {'units': [128, 64, 10],
+# graphs_id = 'MUTAG'
+# x_train, y_train, x_test, y_test = get_data_graphs(graphs_id)
+
+# Mirrored strategy for distributed training
+strategy = tf.distribute.MirroredStrategy()
+
+# Set train params
+base_batch = 64
+batch_size = base_batch * strategy.num_replicas_in_sync
+train_params = {'units': [512, 256, 10],
                 'epochs': 100,
-                'batch_size': 16
-                }
-# x_train, y_train, x_test, y_test =\
-#     get_data_images(images_id, directions, center, radius, n_iter_er, n_iter_dil)
+                'batch_size': batch_size}
 
-graphs_id = 'IMDB_BINARY'
-x_train, x_test, y_train, y_test = get_data_graphs(graphs_id)
+# Set hyperparams to search over
+MAN_DIM = hp.HParam('man_dim', hp.Discrete([3]))
+PROJ_BASES = hp.HParam('proj_bases', hp.Discrete([30]))
+MANIFOLD = hp.HParam('proj_bases', hp.Discrete(['poincare']))
 
-train(x_train, y_train, x_test, y_test, man_dim=7, K=20, train_params=train_params)
+# Train for all hyperparams
+session_num = 0
+for man_dim in MAN_DIM.domain.values:
+    for proj_bases in PROJ_BASES.domain.values:
+        for manifold in MANIFOLD.domain.values:
+            hparams = {
+                'man_dim' : man_dim,
+                'proj_bases' : proj_bases,
+                'manifold' : manifold
+            }
+            # Print session info
+            run_name = "run-%d" % session_num
+            print('--- Starting trial: %s' % run_name)
+            print({h: hparams[h] for h in hparams.keys()})
+            # Train
+            train(x_train, y_train, x_test, y_test,
+                  train_params=train_params, hparams=hparams, strategy=strategy)
+            session_num += 1
+
