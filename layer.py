@@ -9,22 +9,24 @@ class PManifold(tf.keras.layers.Layer):
         its points embedded in a m-dim Euclidean space
     '''
 
-    def __init__(self, max_num_of_points, man_dim, num_of_hom, K, manifold='poincare'):
+    def __init__(self, input_shape, output_shape, manifold='poincare'):
         '''
             Initializes layer params, i.e theta's
         '''
         super(PManifold, self).__init__()
-        self.K = K
-        self.num_of_hom = num_of_hom
-        self.max_num_of_points = max_num_of_points
-        self.man_dim = man_dim
+
+        self.num_of_hom = input_shape[0]
+        self.max_num_of_points = input_shape[1]
+
+        self.K = output_shape[1]
+        self.man_dim = output_shape[2]
 
         if manifold == 'poincare':
-            self.manifold = manifolds.Poincare(man_dim=man_dim)
+            self.manifold = manifolds.Poincare(man_dim=self.man_dim)
         if manifold == 'euclidean':
             self.manifold = manifolds.Euclidean()
         if manifold == 'lorenz':
-            self.manifold = manifolds.Lorenz(man_dim=man_dim)
+            self.manifold = manifolds.Lorenz(man_dim=self.man_dim)
 
         self.x_o = tf.random.normal(shape=(self.man_dim,))  # the fixed point on the manifold
         self.x_o = self.manifold.project_to_manifold(self.x_o)
@@ -40,15 +42,19 @@ class PManifold(tf.keras.layers.Layer):
         '''
             Compute the representation of a diagram
         '''
+
+        # Zero-pad the points in the PD so that they have the same dim as the man_dim
         padded_dgm = tf.pad(dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
+
+        # Transform to manifold
         man_dgm = self.manifold.parametrization(padded_dgm)
 
+        # Expand the repeat so that it's possible to add the theta's
         man_dgm = tf.expand_dims(man_dgm, axis=-2)
         man_dgm = tf.repeat(man_dgm, repeats=self.K, axis=-2)
 
-        theta = tf.gather(self.theta, indices=ind, axis=0)
-
         # Add lernable vars
+        theta = tf.gather(self.theta, indices=ind, axis=0)
         x = tf.add(man_dgm, theta)
 
         # Make sure that point still belongs to the manifold
@@ -56,6 +62,8 @@ class PManifold(tf.keras.layers.Layer):
 
         # Transfer to tangent space
         tangent_x = self.manifold.log_map_x(self.x_o, x)
+
+        # Reshaping not really needed, TF might complain for unknown shape that's why we do it
         reshaped_tangent_x = tf.reshape(tangent_x,
                                         shape=[-1, self.max_num_of_points,
                                                self.K, self.man_dim])
@@ -71,6 +79,11 @@ class PManifold(tf.keras.layers.Layer):
         return tf.reshape(y_dgm, shape=[-1, self.K, self.man_dim])
 
     def get_config(self):
+        '''
+            Set's the vars of the class. Overrides the Keras method layer and used in case we want
+            to save the model. Doesn't really work cuz the manifold class is not serializable.
+            Put it here to avoid Keras errors
+        '''
         config = super().get_config().copy()
         config.update({
             'projection_bases': self.K,
@@ -90,6 +103,7 @@ class PManifold(tf.keras.layers.Layer):
         # Get the diagrams for the two homology classes
         # Two classes are sufficient for images/graphs
         # TODO generalize to m classes in the future
+
         dgm_0 = inputs[:, 0, :, :]  # zero-th homology class
         dgm_1 = inputs[:, 1, :, :]  # first homology class
 
@@ -98,6 +112,5 @@ class PManifold(tf.keras.layers.Layer):
         out_1 = self.process_dgm(dgm_1, 1)
         out_0 = tf.expand_dims(out_0, axis=1)
         out_1 = tf.expand_dims(out_1, axis=1)
-        out = tf.concat([out_0, out_1], axis=1)
 
-        return out
+        return tf.concat([out_0, out_1], axis=1)
