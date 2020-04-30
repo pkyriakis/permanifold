@@ -4,7 +4,7 @@
 import math
 import os
 import utils
-os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,3"
 import tensorflow as tf
 
 from persistence_diagram import *
@@ -29,7 +29,7 @@ def get_data_images(images_id):
 
     ## Set the params of the filtrations
     # Height filtration
-    num_of_vects = 10
+    num_of_vects = 20
     angles = np.linspace(0, 2 * math.pi, num_of_vects)
     directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
     directions = np.array(directions)
@@ -42,11 +42,11 @@ def get_data_images(images_id):
 
     # Erosion filtration
     n_iter_er = np.array([1, 2, 3, 50])
-    n_iter_er = np.array([])
+    #n_iter_er = np.array([])
 
     # Dilation filtration
     n_iter_dil = np.array([1, 3, 5, 10, 50])
-    n_iter_dil = np.array([])
+    #n_iter_dil = np.array([])
 
     # Set filtration params
     params = {'cubical': False,
@@ -122,8 +122,8 @@ def main(d_type, data_id):
     # Set train params
     base_batch = 64
     batch_size = base_batch * strategy.num_replicas_in_sync
-    train_params = {'units': [128, 0, 70],
-                    'epochs': 200,
+    train_params = {'units': [256, 128, 10],
+                    'epochs': 20,
                     'batch_size': batch_size}
 
     # Set hyperparams to search over
@@ -154,4 +154,4 @@ def main(d_type, data_id):
 
 
 if __name__ == '__main__':
-    main('images', 'mpeg7')
+    main('images', 'mnist')

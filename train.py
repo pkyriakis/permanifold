@@ -46,9 +46,9 @@ def train(x_train, y_train, x_test, y_test, train_params, hparams, strategy, dat
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
     # Build model
-    #with strategy.scope():
-    per_model = model.build_model(input_shape=input_shape, hparams=hparams, units=units)
-    per_model.compile(optimizer=optimizer, loss=loss_fn, metrics=['accuracy'])
+    with strategy.scope():
+        per_model = model.build_model(input_shape=input_shape, hparams=hparams, units=units)
+        per_model.compile(optimizer=optimizer, loss=loss_fn, metrics=['accuracy'])
 
     print(per_model.summary())
 

@@ -28,8 +28,8 @@ class PManifold(tf.keras.layers.Layer):
         if manifold == 'lorenz':
             self.manifold = manifolds.Lorenz(man_dim=self.man_dim)
 
-        self.x_o = tf.random.normal(shape=(self.man_dim,))  # the fixed point on the manifold
-        self.x_o = self.manifold.project_to_manifold(self.x_o)
+        self.x_o = tf.zeros(shape=(self.man_dim,))  # the fixed point on the manifold
+        #self.x_o = self.manifold.project_to_manifold(self.x_o)
 
         theta_init = tf.random_uniform_initializer()
         self.theta = tf.Variable(name='theta',
@@ -43,22 +43,19 @@ class PManifold(tf.keras.layers.Layer):
             Compute the representation of a diagram
         '''
 
-        # Zero-pad the points in the PD so that they have the same dim as the man_dim
-        padded_dgm = tf.pad(dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
+        # Replicate diagram self.K times
+        tilled_dgm = tf.tile(dgm, [1, self.K, 1])
+        tilled_dgm = tf.pad(tilled_dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
+
+        # Replicate lernable vars self.max_num_of_points times
+        tilled_theta = tf.tile(self.theta[ind, :, :], multiples=[1, self.max_num_of_points])
+        tilled_theta = tf.reshape(tilled_theta, shape=[-1, self.man_dim])
 
         # Transform to manifold
-        man_dgm = self.manifold.parametrization(padded_dgm)
-
-        # Expand the repeat so that it's possible to add the theta's
-        man_dgm = tf.expand_dims(man_dgm, axis=-2)
-        man_dgm = tf.repeat(man_dgm, repeats=self.K, axis=-2)
+        x = self.manifold.parametrization(tilled_dgm)
 
         # Add lernable vars
-        theta = tf.gather(self.theta, indices=ind, axis=0)
-        x = tf.add(man_dgm, theta)
-
-        # Make sure that point still belongs to the manifold
-        x = self.manifold.project_to_manifold(x)
+        x = tf.add(x, tilled_theta)
 
         # Transfer to tangent space
         tangent_x = self.manifold.log_map_x(self.x_o, x)
