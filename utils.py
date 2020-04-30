@@ -37,7 +37,7 @@ def get_mnist_data(binirize = False, fashion = False):
     return train_images, train_labels, test_images, test_labels
 
 
-def get_mpeg_data(dir='datasets/mpeg7/', new_size=64, train_split = 0.9):
+def get_mpeg_data(dir='datasets/mpeg7/', new_size=28, train_split = 0.8):
     '''
         Reads a pre-processes the MPEG7 dataset
     '''

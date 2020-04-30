@@ -55,7 +55,7 @@ def build_model(input_shape, hparams, units=None):
 
     # First dense
     dense1 = tf.keras.layers.Dense(units[0],
-                                        activation='relu')(flat)
+                                        activation='relu')(batch_norm)
 
     # Check if there's a second dense
     if units[1] != 0:
