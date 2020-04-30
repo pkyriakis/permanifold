@@ -122,14 +122,14 @@ def main(d_type, data_id):
     # Set train params
     base_batch = 64
     batch_size = base_batch * strategy.num_replicas_in_sync
-    train_params = {'units': [256, 128, 70],
+    train_params = {'units': [128, 0, 70],
                     'epochs': 200,
                     'batch_size': batch_size}
 
     # Set hyperparams to search over
-    MAN_DIM = hp.HParam('man_dim', hp.Discrete([6, 9, 12]))
+    MAN_DIM = hp.HParam('man_dim', hp.Discrete([7]))
     PROJ_BASES = hp.HParam('proj_bases', hp.Discrete([20]))
-    MANIFOLD = hp.HParam('proj_bases', hp.Discrete(['euclidean']))
+    MANIFOLD = hp.HParam('proj_bases', hp.Discrete(['poincare']))
 
     # Train for all hyperparams
     session_num = 0
