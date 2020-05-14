@@ -1,35 +1,42 @@
 '''
-    Learning Persistent Manifold Representations - NeurIPS Submission
+    Learning Persistent Hyperbolic Representations - NeurIPS Submission
 '''
 import math
 import os
 import utils
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,3"
-import tensorflow as tf
+import argparse
 
 from persistence_diagram import *
 from train import train
 from tensorboard.plugins.hparams import api as hp
 
+import matplotlib.pyplot as plt
 
-def get_data_images(images_id):
+GRAPHS_FROM_FILE = ['COLLAB', 'REDDIT-MULTI-5K', 'REDDIT-MULTI-12K', 'IMDB-MULTI']
+
+def get_data_images(images_id, rotate_test):
     '''
         Obtains train/test data for the given image set using the provided filtration paramers
     '''
-
     # Load data
-    if images_id == 'fashion_mnist':
-        train_images, train_labels, test_images, test_labels = utils.get_mnist_data(fashion=True)
+    if images_id == 'fashion-mnist':
+        train_images, train_labels, test_images, test_labels = utils.get_mnist_data(fashion=True,
+                                                                                    rotate_test=rotate_test)
     elif images_id == 'cifar10':
         train_images, train_labels, test_images, test_labels = utils.get_cifar()
     elif images_id == 'mpeg7':
         train_images, train_labels, test_images, test_labels = utils.get_mpeg_data()
-    else:  # Load mnist by default
-        train_images, train_labels, test_images, test_labels = utils.get_mnist_data()
+        #train_images, train_labels = utils.augment_images(train_images, train_labels, N=2000)
+    elif images_id == 'mnist':  # Load mnist by default
+        train_images, train_labels, test_images, test_labels = utils.get_mnist_data(rotate_test=rotate_test)
+    elif images_id == 'emnist':  # Load mnist by default
+        train_images, train_labels, test_images, test_labels = utils.get_emnist_data()
+    else:
+        raise ValueError("Please give valid image dataset name (mnist, emnist, fashion-mnist, mpeg7, cifar10)")
 
     ## Set the params of the filtrations
     # Height filtration
-    num_of_vects = 20
+    num_of_vects = 50
     angles = np.linspace(0, 2 * math.pi, num_of_vects)
     directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
     directions = np.array(directions)
@@ -49,7 +56,7 @@ def get_data_images(images_id):
     #n_iter_dil = np.array([])
 
     # Set filtration params
-    params = {'cubical': False,
+    params = {'cubical': True,
               'height': directions,
               'radial': {'center': center,
                          'radius': radius
@@ -83,36 +90,62 @@ def get_data_graphs(graphs_id):
     '''
         Obtains train/test data for the given graph dataset
     '''
+    filtrations = ['degree']
+
+    # Try to load if already computed
+    graph_pd = GraphPDiagram([], graphs_id=graphs_id, filtrations=filtrations)
+    x_train, y_train, x_test, y_test = graph_pd.load_pds()
+    if x_train != None:
+        return x_train, y_train, x_test, y_test
+
     # Get train/test graphs
-    train_graphs, train_labels, test_graphs, test_labels = utils.get_graphs(graphs_id)
+    if graphs_id in GRAPHS_FROM_FILE:
+        train_graphs, y_train, test_graphs, y_test =\
+            utils.get_graphs_from_file(graphs_id)
+    else:
+        train_graphs, y_train, test_graphs, y_test = \
+            utils.get_graphs_from_dir(graphs_id)
 
     # Concat to one
     N_train = len(train_graphs)
     graphs = train_graphs + test_graphs
 
-    # Get PDs for all graphs
-    filtrations = ['vr', 'degree', 'avg_path']
-    graph_pd = GraphPDiagram(graphs, graphs_id=graphs_id, filtrations=filtrations)
+    # Get Pds
+    graph_pd.set_graphs(graphs)
     diagrams = graph_pd.get_pds()
 
     # Split them
     x_train = []
     x_test = []
     for diagram in diagrams:
-        x_train.append(diagram)
+        x_train.append(diagram[:N_train])
         x_test.append(diagram[N_train:])
 
-    y_train = train_labels
-    y_test = test_labels
+    graph_pd.save_pds(x_train, y_train, x_test, y_test)
 
     return x_train, y_train, x_test, y_test
 
 
-def main(d_type, data_id):
+def main(args):
+    # Parse arguments
+    data_type = args.data_type
+    data_id = args.data_id
+    man_dims = [int(m) for m in args.man_dim.split(",")]
+    proj_bases = [int(k) for k in args.proj_bases.split(",")]
+    spaces = [s for s in args.spaces.split(",")]
+    base_batch = args.batch_size
+    epochs = args.epochs
+    rotate_test = args.rotate_test
+    gpus = args.gpus
+    if gpus != -1:
+        os.environ["CUDA_VISIBLE_DEVICES"] = gpus
+
+    import tensorflow as tf
+
     # Get dataset
-    if d_type == 'images':
+    if data_type == 'images':
         x_train, y_train, x_test, y_test = \
-            get_data_images(data_id)
+            get_data_images(data_id, rotate_test)
     else:
         x_train, y_train, x_test, y_test = get_data_graphs(data_id)
 
@@ -120,16 +153,16 @@ def main(d_type, data_id):
     strategy = tf.distribute.MirroredStrategy()
 
     # Set train params
-    base_batch = 64
+    no_of_classes = len(list(np.unique(y_train)))
     batch_size = base_batch * strategy.num_replicas_in_sync
-    train_params = {'units': [256, 128, 10],
-                    'epochs': 20,
+    train_params = {'units': [256, 128, no_of_classes],
+                    'epochs': epochs,
                     'batch_size': batch_size}
 
     # Set hyperparams to search over
-    MAN_DIM = hp.HParam('man_dim', hp.Discrete([7]))
-    PROJ_BASES = hp.HParam('proj_bases', hp.Discrete([20]))
-    MANIFOLD = hp.HParam('proj_bases', hp.Discrete(['poincare']))
+    MAN_DIM = hp.HParam('man_dim', hp.Discrete(man_dims))
+    PROJ_BASES = hp.HParam('proj_bases', hp.Discrete(proj_bases))
+    MANIFOLD = hp.HParam('proj_bases', hp.Discrete(spaces))
 
     # Train for all hyperparams
     session_num = 0
@@ -139,7 +172,9 @@ def main(d_type, data_id):
                 hparams = {
                     'man_dim': man_dim,
                     'proj_bases': proj_bases,
-                    'manifold': manifold
+                    'manifold': manifold,
+                    'rotate_test': rotate_test,
+                    'dropout': 0.1
                 }
                 # Print session info
                 run_name = "run-%d" % session_num
@@ -154,4 +189,21 @@ def main(d_type, data_id):
 
 
 if __name__ == '__main__':
-    main('images', 'mnist')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data_type", help="the type data; images or graphs")
+    parser.add_argument("data_id", help="unique identifier of the data, must match the folder name in the datasets dir")
+    parser.add_argument('-m', "--man_dim",
+                        help="the manifold dimension to train over, comma-separated list of ints", default="3,6,9,10")
+    parser.add_argument('-K', "--proj_bases",
+                        help="the number of projection bases, comma-separated list of ints", default="10")
+    parser.add_argument("-s", "--spaces",
+                        help="manifold(s); comma-separated list, valid options are poincare, lorenz, euclidean",
+                        default="poincare,lorenz,euclidean")
+    parser.add_argument('-rt','--rotate_test', help="If set the test images are rotated by 90 degs (only valid for images)",
+                        action='store_true')
+    parser.add_argument("-e", "--epochs", help="number of epochs to run", type=int, default=10)
+    parser.add_argument("-b", "--batch_size", help="batch size", type=int, default=64)
+    parser.add_argument("-g", "--gpus", help="gpus to use, set to -1 to use all", default="-1")
+    args = parser.parse_args()
+
+    main(args)

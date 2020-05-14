@@ -23,6 +23,7 @@ def build_model(input_shape, hparams, units=None):
     man_dim = hparams['man_dim']
     K = hparams['proj_bases']
     manifold = hparams['manifold']
+    dropout_rate = hparams['dropout']
 
     # Setup an input for each filtration
     in_layer = []
@@ -37,7 +38,8 @@ def build_model(input_shape, hparams, units=None):
 
         # Create Persistent Manifold Layer
         pm_layer = PManifold(input_shape=layer_input_shape,
-                             output_shape=layer_output_shape, manifold=manifold)
+                             output_shape=layer_output_shape,
+                             manifold=manifold)
 
         # Append to lst
         inputs.append(cur_input)
@@ -66,7 +68,7 @@ def build_model(input_shape, hparams, units=None):
         dense2 = dense1
 
     # Dropout
-    dropout = tf.keras.layers.Dropout(0.2)(dense2)
+    dropout = tf.keras.layers.Dropout(dropout_rate)(dense2)
 
     # Out
     out_layer = tf.keras.layers.Dense(units=units[2])(dropout)

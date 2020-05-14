@@ -22,14 +22,17 @@ class PManifold(tf.keras.layers.Layer):
         self.man_dim = output_shape[2]
 
         if manifold == 'poincare':
-            self.manifold = manifolds.Poincare(man_dim=self.man_dim)
+            self.manifold = manifolds.Poincare(max_num_of_points=self.max_num_of_points,
+                                               man_dim=self.man_dim, K=self.K)
+            self.x_o = tf.zeros(shape=(self.man_dim,))  # the fixed point on the manifold
         if manifold == 'euclidean':
             self.manifold = manifolds.Euclidean()
+            self.x_o = tf.zeros(shape=(self.man_dim,))  # the fixed point on the manifold
         if manifold == 'lorenz':
-            self.manifold = manifolds.Lorenz(man_dim=self.man_dim)
-
-        self.x_o = tf.zeros(shape=(self.man_dim,))  # the fixed point on the manifold
-        #self.x_o = self.manifold.project_to_manifold(self.x_o)
+            self.manifold = manifolds.Lorenz(max_num_of_points=self.max_num_of_points,
+                                               man_dim=self.man_dim, K=self.K)
+            self.x_o = tf.concat([tf.constant(-1., shape=(1,)),
+                                  tf.zeros(self.man_dim-1,)], axis=-1)
 
         theta_init = tf.random_uniform_initializer()
         self.theta = tf.Variable(name='theta',
@@ -43,16 +46,18 @@ class PManifold(tf.keras.layers.Layer):
             Compute the representation of a diagram
         '''
 
-        # Replicate diagram self.K times
-        tilled_dgm = tf.tile(dgm, [1, self.K, 1])
-        tilled_dgm = tf.pad(tilled_dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
+        # Pad diagram
+        padded_dgm = tf.pad(dgm, paddings=[[0, 0], [0, 0], [0, self.man_dim - 2]])
+
+        # Transform to manifold
+        x = self.manifold.parametrization(padded_dgm)
+
+        # Replicate it
+        x = tf.tile(x, [1, self.K, 1])
 
         # Replicate lernable vars self.max_num_of_points times
         tilled_theta = tf.tile(self.theta[ind, :, :], multiples=[1, self.max_num_of_points])
         tilled_theta = tf.reshape(tilled_theta, shape=[-1, self.man_dim])
-
-        # Transform to manifold
-        x = self.manifold.parametrization(tilled_dgm)
 
         # Add lernable vars
         x = tf.add(x, tilled_theta)
