@@ -1,4 +1,4 @@
-import datetime
+import glob, os
 import tensorflow as tf
 import model, math
 from tensorboard.plugins.hparams import api as hp
@@ -6,9 +6,9 @@ from tensorboard.plugins.hparams import api as hp
 
 def scheduler(epoch):
     '''
-        Scheduler for training rate, discrease exp every 50 epochs
+        Scheduler for training rate, halve every 25 epochs
     '''
-    rt = math.ceil((epoch + 1) / 5)
+    rt = math.ceil((epoch + 1) / 25)
     return 0.001 / rt
 
 
@@ -26,6 +26,7 @@ def train(x_train, y_train, x_test, y_test, train_params, hparams, strategy, dat
         Note: num_of_hom is set statically to 2. It is known for graphs/images.
               @PManifoldLayer can only handle two homology classes so far.
     '''
+
     # Get params
     units = train_params['units']
     epochs = train_params['epochs']
@@ -52,18 +53,45 @@ def train(x_train, y_train, x_test, y_test, train_params, hparams, strategy, dat
 
     print(per_model.summary())
 
+    # Set up model checkpoint files
+    model_folder = "K" + str(hparams["proj_bases"]) + "_m" \
+                   + str(hparams["man_dim"]) + "_s" + hparams["manifold"]
+    model_folder = data_id + '_' + model_folder
+    model_file = 'models/' + model_folder + "/weights.{epoch:02d}.h5"
+    model_dir = os.path.dirname(model_file)
+
+    # Try to load weights if already there
+    if os.path.exists(model_dir):
+        list_of_files = glob.glob(model_dir + "/*.h5")
+        if list_of_files:
+            latest= max(list_of_files, key=os.path.getctime)
+            if latest is not None:
+                per_model.load_weights(latest)
+                print("Loaded model weights, continuing training.")
+    else:
+        os.makedirs(model_dir) # Create dirs, for some reason Keras callback won't create them
+
+    # Set up model checkpoint callback
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(model_file, monitor='loss', save_weights_only=True,
+                                                    verbose=1, save_best_only=True, mode='min')
+
     # Set up tensorboard and other callbacks
-    log_dir = "logs/fit/" + data_id + '/' + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    log_dir = "logs/fit/" + model_folder
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+    # Learning rate scheduler
     rate_callback = tf.keras.callbacks.LearningRateScheduler(scheduler)
+
+    # Hyperparms callback
     hp_callback = hp.KerasCallback(log_dir, hparams=hparams)
-    stop_callback = tf.keras.callbacks.EarlyStopping(monitor='loss', min_delta=0.01, patience=2)
+
+    # Early stopping
+    stop_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0.01, patience=2)
 
     # Train
     per_model.fit(x=x_train,
                   y=y_train,
                   epochs=epochs,
                   batch_size=batch_size,
-                  # callbacks=[tensorboard_callback,
-                  #            hp_callback, stop_callback, rate_callback],
-                  validation_data=(x_test, y_test), shuffle=True)
+                  callbacks=[tensorboard_callback, hp_callback, rate_callback, checkpoint],
+                  validation_data=(x_test, y_test), verbose=1)

@@ -179,10 +179,12 @@ class GraphPDiagram():
         self.save_dir = 'diagrams/' + graphs_id
         self.distances = None
         self.dgms = multiprocessing.Manager().dict()
-        self.max_num_of_points = multiprocessing.Manager().Value('i',0)
 
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
+
+    def set_graphs(self, graphs):
+        self.graphs = graphs
 
     def __chunks(self, lst, n):
         '''
@@ -191,19 +193,33 @@ class GraphPDiagram():
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
 
-    def get_pds(self):
+    def save_pds(self, x_train, y_train, x_test, y_test):
+        '''
+            Save train/test PDs and labels
+        '''
+        fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0, 1000)))
+        out_file = open(fname, 'wb')
+        pickle.dump([x_train, y_train, x_test, y_test, self.filtrations],
+                    out_file, protocol=-1)
+        out_file.close()
+
+    def load_pds(self):
+        '''
+            Tries load PDs if already computed
+        '''
         for filename in os.listdir(self.save_dir):
             if ".pkl" in filename:
-                equal = True
                 with open(os.path.join(self.save_dir, filename), 'rb') as f:
-                    [filtrations, data] = pickle.load(f)
-                    for filtration in filtrations:
-                        if not filtration in self.filtrations:
-                            equal = False
-                    if equal:
+                    [x_train, y_train, x_test, y_test,filtrations] = pickle.load(f)
+                    if set(filtrations) == set(self.filtrations):
                         print('Loaded persistence diagrams.')
-                        return data
+                        return x_train, y_train, x_test, y_test
+        return None, None, None, None
 
+    def get_pds(self):
+        '''
+            Get persistence diagrams
+        '''
         pds = []
         if 'vr' in self.filtrations:
             print('Computing Vietoris Rips Graph Persistence')
@@ -214,12 +230,6 @@ class GraphPDiagram():
         if 'avg_path' in self.filtrations:
             print('Computing Lower-Star Persistence using average path length')
             pds.append(self.__get_lower_star_parallel('avg_path'))
-
-        # # Save to file
-        fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0, 1000)))
-        out_file = open(fname, 'wb')
-        pickle.dump([self.filtrations, pds], out_file, protocol=-1)
-        out_file.close()
 
         return pds
 
@@ -293,14 +303,9 @@ class GraphPDiagram():
             degrees = sorted([d for (n, d) in graph.degree()])
             degrees = list(set(degrees))
             return degrees
-        if sublevel == 'clustering':
-            coef = sorted([c for (n, c) in nx.clustering(graph).items()])
-            coef = list(set(coef))
-            return coef
         if sublevel == 'avg_path':
             dist = self.distances[ind]
             means = np.mean(dist, axis=0)
-
             return sorted(means)
 
     def __check_sublevel(self, ind, u, val, sublevel):
@@ -310,8 +315,6 @@ class GraphPDiagram():
         graph = self.graphs[ind]
         if sublevel == 'degree':
             return graph.degree(u) <= val
-        if sublevel == 'clustering':
-            return nx.clustering(graph, u) <= val
         if sublevel == 'avg_path':
             dist = self.distances[ind]
             val_u = np.mean(dist[u,:])
@@ -321,9 +324,9 @@ class GraphPDiagram():
         '''
             Compute PDs by creating a complex using the given sublevel function
         '''
-        max_num_of_points = 0
-        dgms = dict()
-        for ind in chunk:
+
+        # Iterate over the given chunk
+        for ind in tqdm(chunk):
             graph = self.graphs[ind]
             values = self.__get_filtration_values(ind, sublevel)
             filtration = []
@@ -346,29 +349,38 @@ class GraphPDiagram():
                 subgraphs.append(subgraph)
 
             # Get persistence diagram
-            dgm = cm.phat_diagrams(filtration, show_inf=True, verbose=False)
-
+            dgms = cm.phat_diagrams(filtration, show_inf=True, verbose=False)
             # Replace inf values
-            tmp0 = dgm[0]
-            tmp0[tmp0 == np.inf] = values[-1]
-            tmp1 = dgm[1]
-            tmp1[tmp1 == np.inf] = values[-1]
-            dgm = [tmp0, tmp1]
+            new_dgms = []
+            for dgm in dgms:
+                dgm[dgm == np.inf] = values[-1]
+                if dgm.shape[0] > 1000: # few PDs might have an extremely high number of points
+                    dgm = dgm[:1000]
+                new_dgms.append(dgm)
+            dgms = new_dgms
 
-            # Update max number of points
-            new_pnts = max(dgm[0].shape[0], dgm[1].shape[0])
-            self.max_num_of_points.value = max(self.max_num_of_points.value, new_pnts)
+            # PHAT might return only one diagram is there's no H_1 classes
+            # add an empty PD cuz the rest of the code expects two diagrams
+            if len(dgms) == 1:
+                dgms.append(np.array([0, 0]))
 
             # Store
-            self.dgms[ind] = dgm
+            self.dgms[ind] = dgms
 
     def __post_process_dgms(self):
         '''
             Post-processes diagrams after parallel computation is done
         '''
+        max_num_of_points = 0
+        for ind, _ in enumerate(self.graphs):
+            dgm0 = self.dgms[ind][0]
+            dgm1 = self.dgms[ind][1]
+            new_pnts = max(dgm0.shape[0], dgm1.shape[0])
+            max_num_of_points = max(max_num_of_points, new_pnts)
+
         # Convert to np.array
         N = len(self.dgms.keys())
-        out = np.zeros(shape=(N, 2, self.max_num_of_points.value, 2))
+        out = np.zeros(shape=(N, 2, max_num_of_points, 2))
         for ind, _ in enumerate(self.graphs):
             dgm0 = self.dgms[ind][0]
             out[ind, 0, :dgm0.shape[0], :] = dgm0
@@ -381,6 +393,12 @@ class GraphPDiagram():
         '''
             Parellel run of target; the given list of indices creates the chunks to allocate to each cpu
         '''
+
+        if sublevel == 'avg_path':
+            # Get distance if not there
+            if self.distances is None:
+                self.__set_distance_matrix()
+
         indices = range(len(self.graphs))
         cpus = multiprocessing.cpu_count()
         chuck_size = math.ceil(len(indices) / cpus)
@@ -399,6 +417,5 @@ class GraphPDiagram():
 
         # Reset shared vars
         self.dgms = multiprocessing.Manager().dict()
-        self.max_num_of_points = multiprocessing.Manager().Value('i', 0)
 
         return diagrams
