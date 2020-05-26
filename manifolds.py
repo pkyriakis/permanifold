@@ -1,6 +1,5 @@
 import math
 import tensorflow as tf
-import json
 
 
 class Poincare:
@@ -18,9 +17,6 @@ class Poincare:
         self.man_dim = man_dim
         self.max_num_of_points = max_num_of_points
         self.K = K
-
-    def toJson(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
 
     def dot(self, x, y):
         return tf.reduce_sum(x * y, axis=-1, keepdims=True)
@@ -106,133 +102,6 @@ class Poincare:
                     y_i = tf.multiply(y_i, tf.sin(tf.gather(x, axis=-1, indices=j)))
             else:
                 for j in tf.range(1, i + 1):
-                    y_i = tf.multiply(y_i, tf.sin(tf.gather(x, axis=-1, indices=j)))
-                y_i = tf.multiply(y_i, tf.cos(tf.gather(x, axis=-1, indices=i + 1)))
-            y_i = tf.expand_dims(y_i, axis=-1)
-            y = tf.concat([y, y_i], axis=-1)
-        return y
-
-
-class Lorenz:
-    '''
-                Defines several helper functions needed by the Lorenz model
-                such as exp and log maps and the coordinate chart and parameterization
-    '''
-
-    def __init__(self, max_num_of_points, man_dim, K):
-        self.EPS = 1e-5
-        self.poincare = Poincare(max_num_of_points, man_dim, K)
-        self.man_dim = man_dim
-        self.max_num_of_points = max_num_of_points
-        self.K = K
-
-    def cosh(self, x):
-        '''
-            Cosh can cause the optimization to be very slow cuz it has high valued gradient
-            We use first order Taylor approximation
-        '''
-        apprx = 1 + tf.math.square(x)/2.
-        return apprx
-
-    def sinh(self, x):
-        '''
-            Same as above
-        '''
-        appr = 1 - tf.math.pow(x, 3) / 6.
-        return appr
-
-    def dot_g(self, x, y):
-        '''
-            Returns dot product under Lorenzian metric tensor
-        '''
-        tmp1 = -tf.gather(y, indices=0, axis=-1)
-        tmp1 = tf.expand_dims(tmp1, axis=-1)
-        tmp2 = tf.gather(y, indices=tf.range(1, self.man_dim), axis=-1)
-        y = tf.concat([tmp1, tmp2], axis=-1)
-        ret = tf.reduce_sum(x * y, axis=-1, keepdims=True)
-        return ret
-
-    def project_to_manifold(self, x):
-        # Projection op. Need to make sure x is on the hyperbolic sheet
-        # We use the Poincare cuz it's simpler to project a point there
-
-        # Transfer to Poincare
-        den = tf.expand_dims(tf.gather(x, indices=0, axis=-1) + 1, axis=-1) + 1 + self.EPS
-        poinc_x = x / den
-
-        # Project
-        proj_poinc_x = self.poincare.project_to_manifold(poinc_x)
-
-        # Transfer back to Lorenz
-        den = tf.expand_dims(1 - tf.norm(proj_poinc_x, axis=-1), axis=-1) + self.EPS
-        nom = 1 + tf.square(tf.norm(proj_poinc_x, axis=-1, keepdims=True))
-        rest = 2 * tf.gather(proj_poinc_x, indices=tf.range(1, self.man_dim), axis=-1)
-        nom = tf.concat([nom, rest], axis=-1)
-        return nom / den
-
-    def exp_map_x(self, x, v):
-        dt = self.dot_g(v, v)
-        out1 = self.cosh(dt) * x
-        out2 = self.sinh(dt) * x / (dt + self.EPS)
-        return tf.add(out1, out2)
-
-    def log_map_x(self, x, y):
-        arg = tf.clip_by_value(-self.dot_g(x, y), 1., tf.float32.max)
-        nom = tf.acosh(arg)
-        sq = tf.clip_by_value(self.dot_g(x, y) - 1, 0., tf.float32.max)
-        den = tf.sqrt(sq) + self.EPS
-        fact = y + x*self.dot_g(x, y)
-        ret = fact * nom / den
-        return fact
-
-    def parametrization(self, y):
-        '''
-            Transforms the Euclidean point y onto the manifold
-        '''
-        m = self.man_dim
-        r_sq = self.dot_g(y, y)
-        clipped_r = tf.clip_by_value(r_sq, 0., tf.float32.max)
-        x = tf.sqrt(clipped_r)
-
-        for i in tf.range(1, m, dtype=tf.int32):
-            tf.autograph.experimental.set_loop_options(shape_invariants=
-                                                       [(x, tf.TensorShape([None, self.max_num_of_points, None]))])
-            ind = tf.range(i - 1, m)
-            gathered = tf.gather(y, indices=ind, axis=-1)
-            gathered = tf.reshape(gathered, shape=[-1, self.max_num_of_points, m - i + 1])
-            den = tf.norm(gathered, axis=-1, keepdims=True) + self.EPS
-
-            nom = tf.gather(y, axis=-1, indices=i - 1)
-            nom = tf.expand_dims(nom, axis=-1)
-            if i == 1:
-                clipped = tf.clip_by_value( nom / den, 1., tf.float32.max)
-                x_i = tf.acosh(clipped)
-            else:
-                x_i = tf.acos(nom / den)
-            if i == m - 1:
-                x_i = tf.where(x_i > 0., x_i, 2 * math.pi - x_i)
-            x = tf.concat([x, x_i], axis=-1)
-        return tf.where(tf.math.is_nan(x), 0., x)
-
-    def chart(self, x):
-        '''
-            Transforms the manifold point x to the Euclidean space
-        '''
-        m = self.man_dim
-        x_0 = tf.gather(x, axis=-1, indices=0)
-        x_1 = tf.gather(x, axis=-1, indices=1)
-        y = tf.multiply(x_0, self.cosh(x_1))
-        y = tf.expand_dims(y, axis=-1)
-        for i in tf.range(1, m, dtype=tf.int32):
-            tf.autograph.experimental.set_loop_options(shape_invariants=
-                                                       [(y, tf.TensorShape([None, self.K, None]))])
-            y_i = tf.gather(x, axis=-1, indices=0)
-            y_i = tf.multiply(y_i, self.sinh(tf.gather(x, axis=-1, indices=1)))
-            if i == m - 1:
-                for j in tf.range(2, m):
-                    y_i = tf.multiply(y_i, tf.sin(tf.gather(x, axis=-1, indices=j)))
-            else:
-                for j in tf.range(2, i + 1):
                     y_i = tf.multiply(y_i, tf.sin(tf.gather(x, axis=-1, indices=j)))
                 y_i = tf.multiply(y_i, tf.cos(tf.gather(x, axis=-1, indices=i + 1)))
             y_i = tf.expand_dims(y_i, axis=-1)

@@ -3,6 +3,8 @@ from PIL import Image
 
 import tensorflow as tf
 import numpy as np
+import pandas as pd
+
 import networkx as nx
 import urllib.request
 from zipfile import ZipFile
@@ -13,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import shuffle
 
-import  tensorflow_datasets as tfds
+import tensorflow_datasets as tfds
 
 def get_emnist_data(sub = 'letters'):
     '''
@@ -66,6 +68,21 @@ def get_mnist_data(binirize=False, fashion=False, rotate_test=False):
 
     return train_images, train_labels, test_images, test_labels
 
+
+def get_csv_data(path):
+    '''
+        Read images in from cvs file; used in sign dataset
+    '''
+    dataframe = pd.read_csv(path)
+    labels = dataframe['label'].values
+    labels = LabelEncoder().fit_transform(labels)
+    dataframe.drop('label', axis=1, inplace=True)
+
+    images = dataframe.values
+    images = images / 255
+    images = np.array([np.reshape(i, (28, 28)) for i in images])
+
+    return images, labels
 
 def augment_images(images, labels, N):
     '''

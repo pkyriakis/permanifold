@@ -72,7 +72,7 @@ def train(x_train, y_train, x_test, y_test, train_params, hparams, strategy, dat
         os.makedirs(model_dir) # Create dirs, for some reason Keras callback won't create them
 
     # Set up model checkpoint callback
-    checkpoint = tf.keras.callbacks.ModelCheckpoint(model_file, monitor='loss', save_weights_only=True,
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(model_file, monitor='loss', save_weights_only=False,
                                                     verbose=1, save_best_only=True, mode='min')
 
     # Set up tensorboard and other callbacks
@@ -84,9 +84,6 @@ def train(x_train, y_train, x_test, y_test, train_params, hparams, strategy, dat
 
     # Hyperparms callback
     hp_callback = hp.KerasCallback(log_dir, hparams=hparams)
-
-    # Early stopping
-    stop_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0.01, patience=2)
 
     # Train
     per_model.fit(x=x_train,

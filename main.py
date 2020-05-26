@@ -16,7 +16,7 @@ GRAPHS_FROM_FILE = ['COLLAB', 'REDDIT-MULTI-5K', 'REDDIT-MULTI-12K', 'IMDB-MULTI
 
 def get_data_images(images_id, rotate_test):
     '''
-        Obtains train/test data for the given image set using the provided filtration paramers
+        Obtains train/test data for the given image set using the provided filtration parameters
     '''
     # Load data
     if images_id == 'fashion-mnist':
@@ -26,43 +26,34 @@ def get_data_images(images_id, rotate_test):
         train_images, train_labels, test_images, test_labels = utils.get_cifar()
     elif images_id == 'mpeg7':
         train_images, train_labels, test_images, test_labels = utils.get_mpeg_data()
-        #train_images, train_labels = utils.augment_images(train_images, train_labels, N=2000)
-    elif images_id == 'mnist':  # Load mnist by default
+    elif images_id == 'mnist':
         train_images, train_labels, test_images, test_labels = utils.get_mnist_data(rotate_test=rotate_test)
-    elif images_id == 'emnist':  # Load mnist by default
+    elif images_id == 'emnist':
         train_images, train_labels, test_images, test_labels = utils.get_emnist_data()
+    elif images_id == 'sign':
+        train_images, train_labels = utils.get_csv_data('./datasets/sign/sign_mnist_train.csv')
+        test_images, test_labels = utils.get_csv_data('./datasets/sign/sign_mnist_test.csv')
     else:
-        raise ValueError("Please give valid image dataset name (mnist, emnist, fashion-mnist, mpeg7, cifar10)")
+        raise ValueError("Please give valid image dataset name (mnist, emnist, fashion-mnist, mpeg7, cifar10, sign)")
 
     ## Set the params of the filtrations
     # Height filtration
-    num_of_vects = 50
+    num_of_vects = 30
     angles = np.linspace(0, 2 * math.pi, num_of_vects)
     directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
     directions = np.array(directions)
 
-    # Radial filtration
-    center = np.array([[10, 10], [10, 20], [15, 15], [20, 10], [20, 20]])
-    radius = np.array([5, 8, 10, 12, 15])
-    center = np.array([])
-    radius = np.array([])
-
     # Erosion filtration
     n_iter_er = np.array([1, 2, 3, 50])
-    #n_iter_er = np.array([])
 
     # Dilation filtration
     n_iter_dil = np.array([1, 3, 5, 10, 50])
-    #n_iter_dil = np.array([])
 
     # Set filtration params
     params = {'cubical': True,
-              'height': directions,
-              'radial': {'center': center,
-                         'radius': radius
-                         },
-              'erosion': n_iter_er,
-              'dilation': n_iter_dil
+              'height': directions
+              # 'erosion': n_iter_er,
+              # 'dilation': n_iter_dil
               }
 
     # Concat train/test
@@ -70,7 +61,7 @@ def get_data_images(images_id, rotate_test):
     images = np.concatenate([train_images, test_images], axis=0)
 
     # Get PDs for all
-    image_pd = ImagePDiagram(images, fil_parms=params, images_id=images_id)
+    image_pd = ImagePDiagram(images, filtration_params=params, images_id=images_id)
     diagrams = image_pd.get_pds()
 
     # Split them

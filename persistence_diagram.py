@@ -23,22 +23,32 @@ class ImagePDiagram():
         Main class that generates PDs for images
     '''
 
-    def __init__(self, images, fil_parms, images_id='mnist'):
+    def __init__(self, images, filtration_params, images_id):
+        """
+            Class init
+        @param images: an 3-dim np.array of grey-scale images
+        @param filtration_params: a dict; key is the name of the filtration and value is its parameters
+        @param images_id: string
+        """
         self.images = images
         self.images_id = images_id
         self.save_dir = 'diagrams/' + images_id + "/"
-        self.fil_params = fil_parms
-
+        self.filtration_params = filtration_params
         self.num_images = images.shape[0]
         self.image_size = images.shape[1]
         self.img_inds = list(range(self.num_images))
 
+        # Make save dir if not there
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
 
     def __reshape_dgm(self, dgms):
         '''
-            Splits diagrams accross homology classes
+            Reshapes persistence diagrams.
+        @param dgms: Diagrams to reshape. The last element of the last axis is the homology class (0 or 1).
+        @type dgms: 3-dim np.array
+        @return: Reshaped diagrams. The second axis is the homology class (0 or 1).
+        @rtype: 4-dim np.array
         '''
         N = dgms.shape[0]
         pnts = dgms.shape[1]
@@ -55,15 +65,16 @@ class ImagePDiagram():
         return out
 
     def __get_pds(self):
-        '''
-            Calculates the persistence diagrams for all images
-        :return: a list
-        '''
+        """
+            Calculates the persistence diagrams for all images and filtrations
+        @return: persistence diagrams
+        @rtype: list
+        """
         binarizer = Binarizer(n_jobs=-1)
         bin_image = binarizer.fit_transform(self.images)
         pds = []  # List containing PDs for each filtration
         bar = tqdm(total=0)
-        for filtration, params in self.fil_params.items():
+        for filtration, params in self.filtration_params.items():
             cubical = CubicalPersistence(homology_dimensions=(0, 1), n_jobs=-1)
             if filtration == 'cubical' and params:
                 bar.total = 1
@@ -120,24 +131,25 @@ class ImagePDiagram():
 
     def get_pds(self):
         '''
-            Get embedded PDs
+            Get persistence diagrams; first try to load then calculate if not there
+            @return: persistence diagrams
+            @rtype: list
         '''
         # Check if already there
-        if self.images_id != 'mpeg7':
+        if self.images_id != 'mpeg7': # don't load/save for mpeg7
             for filename in os.listdir(self.save_dir):
                 if ".pkl" in filename:
                     with open(os.path.join(self.save_dir, filename), 'rb') as f:
                         [fil_params, data] = pickle.load(f)
                         equal = True
-
                         # Need to make sure that stored PD is generated using
                         # the same filtration params as the ones provided
                         if self.num_images != data[0].shape[0]:
                             equal = False
-                        if set(self.fil_params.keys()) != set(fil_params.keys()):
+                        if set(self.filtration_params.keys()) != set(fil_params.keys()):
                             equal = False
-                        for filtration in self.fil_params:
-                            vself = self.fil_params[filtration]
+                        for filtration in self.filtration_params:
+                            vself = self.filtration_params[filtration]
                             vin = fil_params[filtration]
                             if type(vin).__module__ == np.__name__:
                                 if not np.array_equal(vin, vself):
@@ -154,11 +166,11 @@ class ImagePDiagram():
         print('Computing persistence diagrams.')
         pds = self.__get_pds()
 
-        # # Save to file
+        # Save to file, except mpeg7
         if self.images_id != 'mpeg7':
             fname = os.path.join(self.save_dir, 'dgms.pkl-' + str(random.randint(0, 1000)))
             out_file = open(fname, 'wb')
-            pickle.dump([self.fil_params, pds], out_file, protocol=-1)
+            pickle.dump([self.filtration_params, pds], out_file, protocol=-1)
             out_file.close()
 
         return pds
@@ -166,13 +178,21 @@ class ImagePDiagram():
 
 class GraphPDiagram():
     '''
-        Main class the computes PDs for graphs
+        Main class the computing PDs for graphs
     '''
 
     def __init__(self, graphs, graphs_id, filtrations=None):
+        """
+            Class init
+        @param graphs: graphs for which to compute persistence diagrams
+        @type graphs: a list of networkx graphs
+        @param graphs_id: unique id
+        @type graphs_id: string
+        @param filtrations: which filtrations to consider
+        @type filtrations: list of strings
+        """
         if filtrations is None:
             filtrations = ['vr', 'degree', 'avg_path']
-
         self.graphs = graphs
         self.graphs_id = graphs_id
         self.filtrations = filtrations
@@ -180,6 +200,7 @@ class GraphPDiagram():
         self.distances = None
         self.dgms = multiprocessing.Manager().dict()
 
+        # Make dir if not there
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
 
@@ -253,7 +274,6 @@ class GraphPDiagram():
         '''
             Computes the Vietoris Rips Persistence
         '''
-
         # Get distance if not there
         if self.distances is None:
             self.__set_distance_matrix()
@@ -278,7 +298,11 @@ class GraphPDiagram():
 
     def __reshape_dgm(self, dgms):
         '''
-            Splits diagrams accross homology classes
+            Reshapes persistence diagrams.
+        @param dgms: Diagrams to reshape. The last element of the last axis is the homology class (0 or 1).
+        @type dgms: 3-dim np.array
+        @return: Reshaped diagrams. The second axis is the homology class (0 or 1).
+        @rtype: 4-dim np.array
         '''
         N = dgms.shape[0]
         pnts = dgms.shape[1]
