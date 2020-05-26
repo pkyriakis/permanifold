@@ -3,15 +3,12 @@ import pickle
 import random
 import math
 import multiprocessing
-from collections import defaultdict
 
 import numpy as np
 import networkx as nx
 import cechmate as cm
 
 from tqdm import tqdm
-from scipy.stats import multivariate_normal
-from scipy.integrate import simps
 from gtda.images import *
 from gtda.homology import VietorisRipsPersistence
 from gtda.graphs import GraphGeodesicDistance

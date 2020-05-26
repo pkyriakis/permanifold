@@ -1,8 +1,6 @@
 '''
     Learning Persistent Hyperbolic Representations - NeurIPS Submission
 '''
-import math
-import os
 import utils
 import argparse
 
@@ -20,8 +18,7 @@ def get_data_images(images_id, rotate_test):
     '''
     # Load data
     if images_id == 'fashion-mnist':
-        train_images, train_labels, test_images, test_labels = utils.get_mnist_data(fashion=True,
-                                                                                    rotate_test=rotate_test)
+        train_images, train_labels, test_images, test_labels = utils.get_mnist_data(fashion=True)
     elif images_id == 'cifar10':
         train_images, train_labels, test_images, test_labels = utils.get_cifar()
     elif images_id == 'mpeg7':
@@ -126,7 +123,6 @@ def main(args):
     spaces = [s for s in args.spaces.split(",")]
     base_batch = args.batch_size
     epochs = args.epochs
-    rotate_test = args.rotate_test
     gpus = args.gpus
     if gpus != -1:
         os.environ["CUDA_VISIBLE_DEVICES"] = gpus
@@ -136,7 +132,7 @@ def main(args):
     # Get dataset
     if data_type == 'images':
         x_train, y_train, x_test, y_test = \
-            get_data_images(data_id, rotate_test)
+            get_data_images(data_id)
     else:
         x_train, y_train, x_test, y_test = get_data_graphs(data_id)
 
@@ -188,10 +184,8 @@ if __name__ == '__main__':
     parser.add_argument('-K', "--proj_bases",
                         help="the number of projection bases, comma-separated list of ints", default="10")
     parser.add_argument("-s", "--spaces",
-                        help="manifold(s); comma-separated list, valid options are poincare, lorenz, euclidean",
-                        default="poincare,lorenz,euclidean")
-    parser.add_argument('-rt','--rotate_test', help="If set the test images are rotated by 90 degs (only valid for images)",
-                        action='store_true')
+                        help="manifold(s); comma-separated list, valid options are poincare, euclidean",
+                        default="poincare,euclidean")
     parser.add_argument("-e", "--epochs", help="number of epochs to run", type=int, default=10)
     parser.add_argument("-b", "--batch_size", help="batch size", type=int, default=64)
     parser.add_argument("-g", "--gpus", help="gpus to use, set to -1 to use all", default="-1")
