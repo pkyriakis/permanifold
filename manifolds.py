@@ -4,7 +4,7 @@ import tensorflow as tf
 
 class Poincare:
     '''
-        Defines several helper functions needed by the Poincare model
+        Defines several helper kusano needed by the Poincare model
         such as exp and log maps and the coordinate chart and parameterization
 
         Note: Some methods were adapted from @https://github.com/dalab/hyperbolic_nn
@@ -111,7 +111,7 @@ class Poincare:
 
 class Euclidean:
     '''
-            Defines helper functions needed by the Euclidean model
+            Defines helper kusano needed by the Euclidean model
     '''
 
     def project_to_manifold(self, x):
