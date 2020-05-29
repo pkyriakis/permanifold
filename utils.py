@@ -1,8 +1,8 @@
 import os
 from PIL import Image
-
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 import networkx as nx
 import urllib.request
 from zipfile import ZipFile
@@ -12,8 +12,94 @@ import tqdm
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import shuffle
+import tensorflow_datasets as tfds
 
-import  tensorflow_datasets as tfds
+from persistence_diagram import *
+
+
+def get_data_images(images_id):
+    '''
+        Obtains train/test data for the given image
+    '''
+    # Load data
+    if images_id == 'fashion-mnist':
+        train_images, train_labels, test_images, test_labels = get_mpeg_data()
+        num_of_vects = 50
+    elif images_id == 'mnist':
+        train_images, train_labels, test_images, test_labels = get_mnist_data()
+        num_of_vects = 30
+    else:
+        raise ValueError("Please give valid image dataset name ('mnist', 'fashion-mnist')")
+
+    ## Set the params of the filtrations
+    angles = np.linspace(0, 2 * math.pi, num_of_vects)
+    directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
+    directions = np.array(directions)
+
+    # Set filtration params
+    params = {'cubical': True, 'height': directions}
+
+    # Concat train/test
+    N_train = train_images.shape[0]
+    images = np.concatenate([train_images, test_images], axis=0)
+
+    # Get PDs for all
+    image_pd = ImagePDiagram(images, filtration_params=params, images_id=images_id)
+    diagrams = image_pd.get_pds()
+
+    # Split them
+    x_train = []
+    x_test = []
+    for diagram in diagrams:
+        x_train.append(diagram[:N_train])
+        x_test.append(diagram[N_train:])
+
+    y_train = train_labels
+    y_test = test_labels
+
+    return x_train, y_train, x_test, y_test
+
+
+def get_data_graphs(graphs_id):
+    '''
+        Obtains train/test data for the given graph dataset
+    '''
+
+    if graphs_id not in ['IMDB_BINARY', 'IMDB-MULTI', 'REDDIT_BINARY', 'REDDIT-MULTI-5K', 'REDDIT-MULTI-12K']:
+        raise ValueError("Please give valid image dataset name ('IMDB_BINARY', 'IMDB-MULTI', 'REDDIT_BINARY', "
+                         "'REDDIT-MULTI-5K', 'REDDIT-MULTI-12K')")
+
+    filtrations = ['degree', 'vr']
+
+    # Try to load if already computed
+    graph_pd = GraphPDiagram([], graphs_id=graphs_id, filtrations=filtrations)
+    x_train, y_train, x_test, y_test = graph_pd.load_pds()
+    if x_train != None:
+        return x_train, y_train, x_test, y_test
+
+    # Get train/test graphs
+    train_graphs, y_train, test_graphs, y_test = \
+        get_graphs_from_file(graphs_id)
+
+    # Concat to one
+    N_train = len(train_graphs)
+    graphs = train_graphs + test_graphs
+
+    # Get Pds
+    graph_pd.set_graphs(graphs)
+    diagrams = graph_pd.get_pds()
+
+    # Split them
+    x_train = []
+    x_test = []
+    for diagram in diagrams:
+        x_train.append(diagram[:N_train])
+        x_test.append(diagram[N_train:])
+
+    graph_pd.save_pds(x_train, y_train, x_test, y_test)
+
+    return x_train, y_train, x_test, y_test
+
 
 def get_emnist_data(sub = 'letters'):
     '''
@@ -66,6 +152,21 @@ def get_mnist_data(binirize=False, fashion=False, rotate_test=False):
 
     return train_images, train_labels, test_images, test_labels
 
+
+def get_csv_data(path):
+    '''
+        Read images in from cvs file; used in sign dataset
+    '''
+    dataframe = pd.read_csv(path)
+    labels = dataframe['label'].values
+    labels = LabelEncoder().fit_transform(labels)
+    dataframe.drop('label', axis=1, inplace=True)
+
+    images = dataframe.values
+    images = images / 255
+    images = np.array([np.reshape(i, (28, 28)) for i in images])
+
+    return images, labels
 
 def augment_images(images, labels, N):
     '''

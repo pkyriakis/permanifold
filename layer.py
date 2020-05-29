@@ -28,11 +28,6 @@ class PManifold(tf.keras.layers.Layer):
         if manifold == 'euclidean':
             self.manifold = manifolds.Euclidean()
             self.x_o = tf.zeros(shape=(self.man_dim,))  # the fixed point on the manifold
-        if manifold == 'lorenz':
-            self.manifold = manifolds.Lorenz(max_num_of_points=self.max_num_of_points,
-                                               man_dim=self.man_dim, K=self.K)
-            self.x_o = tf.concat([tf.constant(-1., shape=(1,)),
-                                  tf.zeros(self.man_dim-1,)], axis=-1)
 
         theta_init = tf.random_uniform_initializer()
         self.theta = tf.Variable(name='theta',

@@ -1,129 +1,11 @@
 '''
     Learning Persistent Hyperbolic Representations - NeurIPS Submission
 '''
-import math
-import os
-import utils
+import utils, os
 import argparse
-
-from persistence_diagram import *
+import numpy as np
 from train import train
 from tensorboard.plugins.hparams import api as hp
-
-import matplotlib.pyplot as plt
-
-GRAPHS_FROM_FILE = ['COLLAB', 'REDDIT-MULTI-5K', 'REDDIT-MULTI-12K', 'IMDB-MULTI']
-
-def get_data_images(images_id, rotate_test):
-    '''
-        Obtains train/test data for the given image set using the provided filtration paramers
-    '''
-    # Load data
-    if images_id == 'fashion-mnist':
-        train_images, train_labels, test_images, test_labels = utils.get_mnist_data(fashion=True,
-                                                                                    rotate_test=rotate_test)
-    elif images_id == 'cifar10':
-        train_images, train_labels, test_images, test_labels = utils.get_cifar()
-    elif images_id == 'mpeg7':
-        train_images, train_labels, test_images, test_labels = utils.get_mpeg_data()
-        #train_images, train_labels = utils.augment_images(train_images, train_labels, N=2000)
-    elif images_id == 'mnist':  # Load mnist by default
-        train_images, train_labels, test_images, test_labels = utils.get_mnist_data(rotate_test=rotate_test)
-    elif images_id == 'emnist':  # Load mnist by default
-        train_images, train_labels, test_images, test_labels = utils.get_emnist_data()
-    else:
-        raise ValueError("Please give valid image dataset name (mnist, emnist, fashion-mnist, mpeg7, cifar10)")
-
-    ## Set the params of the filtrations
-    # Height filtration
-    num_of_vects = 50
-    angles = np.linspace(0, 2 * math.pi, num_of_vects)
-    directions = [[round(math.cos(theta), 3), round(math.sin(theta), 3)] for theta in angles]
-    directions = np.array(directions)
-
-    # Radial filtration
-    center = np.array([[10, 10], [10, 20], [15, 15], [20, 10], [20, 20]])
-    radius = np.array([5, 8, 10, 12, 15])
-    center = np.array([])
-    radius = np.array([])
-
-    # Erosion filtration
-    n_iter_er = np.array([1, 2, 3, 50])
-    #n_iter_er = np.array([])
-
-    # Dilation filtration
-    n_iter_dil = np.array([1, 3, 5, 10, 50])
-    #n_iter_dil = np.array([])
-
-    # Set filtration params
-    params = {'cubical': True,
-              'height': directions,
-              'radial': {'center': center,
-                         'radius': radius
-                         },
-              'erosion': n_iter_er,
-              'dilation': n_iter_dil
-              }
-
-    # Concat train/test
-    N_train = train_images.shape[0]
-    images = np.concatenate([train_images, test_images], axis=0)
-
-    # Get PDs for all
-    image_pd = ImagePDiagram(images, fil_parms=params, images_id=images_id)
-    diagrams = image_pd.get_pds()
-
-    # Split them
-    x_train = []
-    x_test = []
-    for diagram in diagrams:
-        x_train.append(diagram[:N_train])
-        x_test.append(diagram[N_train:])
-
-    y_train = train_labels
-    y_test = test_labels
-
-    return x_train, y_train, x_test, y_test
-
-
-def get_data_graphs(graphs_id):
-    '''
-        Obtains train/test data for the given graph dataset
-    '''
-    filtrations = ['degree']
-
-    # Try to load if already computed
-    graph_pd = GraphPDiagram([], graphs_id=graphs_id, filtrations=filtrations)
-    x_train, y_train, x_test, y_test = graph_pd.load_pds()
-    if x_train != None:
-        return x_train, y_train, x_test, y_test
-
-    # Get train/test graphs
-    if graphs_id in GRAPHS_FROM_FILE:
-        train_graphs, y_train, test_graphs, y_test =\
-            utils.get_graphs_from_file(graphs_id)
-    else:
-        train_graphs, y_train, test_graphs, y_test = \
-            utils.get_graphs_from_dir(graphs_id)
-
-    # Concat to one
-    N_train = len(train_graphs)
-    graphs = train_graphs + test_graphs
-
-    # Get Pds
-    graph_pd.set_graphs(graphs)
-    diagrams = graph_pd.get_pds()
-
-    # Split them
-    x_train = []
-    x_test = []
-    for diagram in diagrams:
-        x_train.append(diagram[:N_train])
-        x_test.append(diagram[N_train:])
-
-    graph_pd.save_pds(x_train, y_train, x_test, y_test)
-
-    return x_train, y_train, x_test, y_test
 
 
 def main(args):
@@ -135,7 +17,6 @@ def main(args):
     spaces = [s for s in args.spaces.split(",")]
     base_batch = args.batch_size
     epochs = args.epochs
-    rotate_test = args.rotate_test
     gpus = args.gpus
     if gpus != -1:
         os.environ["CUDA_VISIBLE_DEVICES"] = gpus
@@ -144,10 +25,9 @@ def main(args):
 
     # Get dataset
     if data_type == 'images':
-        x_train, y_train, x_test, y_test = \
-            get_data_images(data_id, rotate_test)
+        x_train, y_train, x_test, y_test = utils.get_data_images(data_id)
     else:
-        x_train, y_train, x_test, y_test = get_data_graphs(data_id)
+        x_train, y_train, x_test, y_test = utils.get_data_graphs(data_id)
 
     # Mirrored strategy for distributed training
     strategy = tf.distribute.MirroredStrategy()
@@ -173,7 +53,6 @@ def main(args):
                     'man_dim': man_dim,
                     'proj_bases': proj_bases,
                     'manifold': manifold,
-                    'rotate_test': rotate_test,
                     'dropout': 0.1
                 }
                 # Print session info
@@ -197,10 +76,8 @@ if __name__ == '__main__':
     parser.add_argument('-K', "--proj_bases",
                         help="the number of projection bases, comma-separated list of ints", default="10")
     parser.add_argument("-s", "--spaces",
-                        help="manifold(s); comma-separated list, valid options are poincare, lorenz, euclidean",
-                        default="poincare,lorenz,euclidean")
-    parser.add_argument('-rt','--rotate_test', help="If set the test images are rotated by 90 degs (only valid for images)",
-                        action='store_true')
+                        help="manifold(s); comma-separated list, valid options are poincare, euclidean",
+                        default="poincare,euclidean")
     parser.add_argument("-e", "--epochs", help="number of epochs to run", type=int, default=10)
     parser.add_argument("-b", "--batch_size", help="batch size", type=int, default=64)
     parser.add_argument("-g", "--gpus", help="gpus to use, set to -1 to use all", default="-1")
