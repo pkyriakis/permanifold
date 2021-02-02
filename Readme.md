@@ -1,5 +1,5 @@
-# Leaning Persistent Poincare Representations
-This repository contains the code and instructions to run the experiments and replicate the results reported in the paper titled 'Learning Hyperbolic Representations of Topological Features' submitted to ICLR 2021.
+# Learning Hyperbolic Representations of Topological Features
+This repository contains the code and instructions to run the experiments and replicate the results reported in the paper titled 'Learning Hyperbolic Representations of Topological Features' which will appear in [ICLR 2021](https://openreview.net/forum?id=yqPnIRhHtZv).
 
 # Requirements 
 To run the provided files the following requirements must be met:
